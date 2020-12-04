@@ -17,6 +17,7 @@ export class AppComponent implements OnInit {
   layout: string;
   links: Edge[];
   nodes: Node[];
+  animate:boolean=false;
   clusters: ClusterNode[];
   textForDropdown: string;
   textBoxMessage: string;
@@ -144,7 +145,20 @@ export class AppComponent implements OnInit {
         label: 'Node F'
       }
     ];
-    
+
+    this.clusters=[
+      {
+        id: 'third',
+        label: 'Cluster node',
+        childNodeIds: ['2','3','4']
+      },
+      {
+        id: 'one',
+        label: 'Cluster node',
+        childNodeIds: ['5','6']
+      }
+    ];
+    console.log(this.clusters);
 
     this.textBoxMessage = 'use dropdown to select Input Format Type ';
     this.textForDropdown = 'Select Input Type';
@@ -348,6 +362,8 @@ export class AppComponent implements OnInit {
   clearGraph(){
     this.nodes=[];
     this.links=[];
+    this.clusters=[];
+    this.inputFormat=0;
   }
 
 }

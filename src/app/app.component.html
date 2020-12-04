@@ -38,8 +38,8 @@
       <button class="button is-danger"(click)="parseString()" [disabled]="inputFormat==0">Render Graph </button>
       <button class="button is-primary" (click)="clearGraph()">Clear Graph</button>
     </div>
-
-    <div class="dropdown is-hoverable">
+    
+    <div class="dropdown is-hoverable" style="padding-left: 1rem;padding-right: 1rem;">
       <div class="dropdown-trigger">
         <button class="button is-danger" aria-haspopup="true" aria-controls="dropdown-menu">
           <span>{{curveType}}</span>
@@ -56,8 +56,10 @@
         </div>
       </div>
     </div>
+    
 
-    <div class="dropdown is-hoverable " >
+   
+    <div class="dropdown is-hoverable "style="padding-right:-2rem" >
       <div class="dropdown-trigger">
         <button class="button is-danger" aria-haspopup="true" aria-controls="dropdown-menu" >
           <span>{{layout}}</span>
@@ -75,7 +77,6 @@
         </div>
       </div>
     </div>
-
   </div>
 
 
@@ -93,12 +94,13 @@
       </div>
     </div>
 
+
     <!-- card starts -->
     <div class="card" style="border-radius: 3rem; ">
       <!-- graph starts -->
-      <ngx-graph class="chart-container" [view]="[1550, 799]" [showMiniMap]="true" [autoCenter]="true"
-        [miniMapMaxHeight]="100" [layout]="layout" [draggingEnabled]="dragging" [panningEnabled]="panning"
-        [center$]="center$"  [links]="links" [nodes]="nodes" [curve]="curve" [clusters]="clusters">
+      <ngx-graph class="chart-container" [view]="[1550, 799]" [showMiniMap]="true" [autoCenter]="true" [maxZoomLevel]="2"
+        [miniMapMaxHeight]="100" [layout]="layout" [draggingEnabled]="dragging" [panningEnabled]="panning" [animate]="animate"
+        [center$]="center$"  [links]="links" [nodes]="nodes" [clusters]="clusters" [curve]="curve" [clusters]="clusters">
 
 
         <ng-template #nodeTemplate let-node>
@@ -127,6 +129,24 @@
           <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
             <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
           </svg:marker>
+        </ng-template>
+
+        <ng-template #clusterTemplate let-cluster>
+          <svg:g
+            class="node cluster"
+            ngx-tooltip
+            [tooltipPlacement]="'top'"
+            [tooltipType]="'tooltip'"
+            [tooltipTitle]="cluster.label"
+          >
+            <svg:rect
+              rx="5"
+              ry="5"
+              [attr.width]="cluster.dimension.width"
+              [attr.height]="cluster.dimension.height"
+              [attr.fill]="cluster.data.color"
+            />
+          </svg:g>
         </ng-template>
 
 
