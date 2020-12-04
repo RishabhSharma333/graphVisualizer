@@ -4,7 +4,7 @@
 
     <div class="dropdown " [ngClass]="{'is-active':textBoxMenu}">
       <div class="dropdown-trigger">
-        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu" (click)="toggleDropdown()">
+        <button class="button is-danger" aria-haspopup="true" aria-controls="dropdown-menu" (click)="toggleDropdown()">
           <span>{{textForDropdown}}</span>
           <span class="icon is-small">
             <i class="ri-arrow-down-s-line"></i>
@@ -27,14 +27,54 @@
           </a>
         </div>
       </div>
-
     </div>
+
     <div class="field">
       <div class="control">
         <textarea class="textarea" rows="8" placeholder="{{textBoxMessage}}" [disabled]="inputFormat==0" [(ngModel)]=textBoxInput></textarea>
       </div>
     </div>
-    <button class="button"(click)="parseString()">Render Graph </button>
+    <div class="buttons">
+      <button class="button is-danger"(click)="parseString()" [disabled]="inputFormat==0">Render Graph </button>
+      <button class="button is-primary" (click)="clearGraph()">Clear Graph</button>
+    </div>
+
+    <div class="dropdown is-hoverable">
+      <div class="dropdown-trigger">
+        <button class="button is-danger" aria-haspopup="true" aria-controls="dropdown-menu">
+          <span>{{curveType}}</span>
+          <span class="icon is-small">
+            <i class="ri-arrow-down-s-line"></i>
+          </span>
+        </button>
+      </div>
+      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+        <div class="dropdown-content">
+          <a  *ngFor="let line of interpolationTypes" class="dropdown-item" (click)="setInterpolationType(line)" >
+            {{line}}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="dropdown is-hoverable " >
+      <div class="dropdown-trigger">
+        <button class="button is-danger" aria-haspopup="true" aria-controls="dropdown-menu" >
+          <span>{{layout}}</span>
+          <span class="icon is-small">
+            <i class="ri-arrow-down-s-line"></i>
+          </span>
+        </button>
+      </div>
+      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+        <div class="dropdown-content">
+          <a  *ngFor="let lay of layouts" class="dropdown-item" (click)="setLayout(lay.value)" >
+            {{lay.label}}
+          </a>
+          
+        </div>
+      </div>
+    </div>
 
   </div>
 
@@ -43,11 +83,12 @@
     <div class="row" style="height: 4rem;">
       <div class="column">
         <div class="buttons">
-          <button class="button" (click)="toggleDragging()"> Dragging <i *ngIf="dragging" class="ri-check-double-line">
+          <button class="button is-primary" (click)="toggleDragging()"> Dragging <i *ngIf="dragging" class="ri-check-double-line">
             </i> </button>
-          <button class="button" (click)="togglePanning()"> Panning <i *ngIf="panning"
+          <button class="button is-primary" (click)="togglePanning()"> Panning <i *ngIf="panning"
               class="ri-check-double-line"></i></button>
-          <button class="button" (click)="centerGraph()"> Center</button>
+          <button class="button is-primary" (click)="centerGraph()"> Center</button>
+          
         </div>
       </div>
     </div>
@@ -57,7 +98,7 @@
       <!-- graph starts -->
       <ngx-graph class="chart-container" [view]="[1550, 799]" [showMiniMap]="true" [autoCenter]="true"
         [miniMapMaxHeight]="100" [layout]="layout" [draggingEnabled]="dragging" [panningEnabled]="panning"
-        [center$]="center$" [update$]="update$" [links]="links" [nodes]="nodes" [clusters]="clusters">
+        [center$]="center$"  [links]="links" [nodes]="nodes" [curve]="curve" [clusters]="clusters">
 
 
         <ng-template #nodeTemplate let-node>
@@ -80,6 +121,12 @@
               </textPath>
             </svg:text>
           </svg:g>
+        </ng-template>
+
+        <ng-template #defsTemplate>
+          <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
+            <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
+          </svg:marker>
         </ng-template>
 
 

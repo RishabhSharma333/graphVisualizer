@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { from, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
+import * as shape from 'd3-shape';
 import { Node, Edge, ClusterNode } from '@swimlane/ngx-graph';
 
 @Component({
@@ -10,7 +11,7 @@ import { Node, Edge, ClusterNode } from '@swimlane/ngx-graph';
 export class AppComponent implements OnInit {
   title = 'visualizer';
   center$: Subject<boolean> = new Subject();
-  update$: Subject<boolean> = new Subject();
+  // update$: Subject<boolean> = new Subject();
   dragging: boolean;
   panning: boolean;
   layout: string;
@@ -21,7 +22,62 @@ export class AppComponent implements OnInit {
   textBoxMessage: string;
   textBoxInput: string;
   textBoxMenu: boolean = false;
+  lineMenu:boolean=false;
+  layoutMenu:boolean=false;
   inputFormat: number = 0;
+
+  layouts: any[] = [
+   
+    {
+      label: 'Dagre Cluster',
+      value: 'dagreCluster',
+      isClustered: true,
+    },
+    {
+      label: 'Cola Force Directed',
+      value: 'colaForceDirected',
+      isClustered: true,
+    },
+    {
+      label: 'D3 Force Directed',
+      value: 'd3ForceDirected',
+    },
+  ];
+
+  interpolationTypes = [
+    'Bundle',
+    'Linear',
+    'Monotone X',
+    'Monotone Y',
+    'Step',
+  ];  
+
+  curveType: string = 'Bundle';
+  curve: any = shape.curveLinear;
+
+  setInterpolationType(curveType) {
+    this.curveType = curveType;
+    if (curveType === 'Bundle') {
+      this.curve = shape.curveBundle.beta(1);
+    }
+    
+    if (curveType === 'Linear') {
+      this.curve = shape.curveLinear;
+    }
+    if (curveType === 'Monotone X') {
+      this.curve = shape.curveMonotoneX;
+    }
+    if (curveType === 'Monotone Y') {
+      this.curve = shape.curveMonotoneY;
+    }
+    
+    if (curveType === 'Step') {
+      this.curve = shape.curveStep;
+    }
+    this.lineMenu=false;
+  }
+
+
   ngOnInit() {
     this.links = [
       {
@@ -88,17 +144,26 @@ export class AppComponent implements OnInit {
         label: 'Node F'
       }
     ];
+    
 
     this.textBoxMessage = 'use dropdown to select Input Format Type ';
     this.textForDropdown = 'Select Input Type';
 
     this.dragging = true;
     this.panning = true;
-    this.layout = 'dagre';
+    this.layout = 'dagreCluster';
     console.log('printing from ng on in it');
     // console.log(this.links);
     // console.log(this.nodes);
   }
+  setLayout(layoutName: string): void {
+    this.layout = layoutName;
+  }
+  toggleLayoutMenu(){
+    this.layoutMenu=!this.layoutMenu;
+  }
+
+  
   toggleDragging() {
     this.dragging = !this.dragging;
   }
@@ -108,13 +173,14 @@ export class AppComponent implements OnInit {
   toggleDropdown() {
     this.textBoxMenu = !this.textBoxMenu;
   }
+  
   centerGraph() {
     this.center$.next(true);
   }
 
-  updateGraph() {
-    this.update$.next(true)
-  }
+  // updateGraph() {
+  //   this.update$.next(true)
+  // }
 
   selectType(num: number) {
     this.toggleDropdown();
@@ -137,7 +203,7 @@ export class AppComponent implements OnInit {
     else if (num == 4) {
       this.textForDropdown = 'Weighted Edge List';
 
-      this.textBoxMessage = 'use format as \n array of [Start Node, weight,End Node ]\n [Start Node, weight,End Node ]';
+      this.textBoxMessage = 'use format as \n  [Start Node, weight,End Node ]\n [Start Node, weight,End Node ]';
     }
   }
 
@@ -204,6 +270,7 @@ export class AppComponent implements OnInit {
     }
 
     else if (this.inputFormat == 3) {
+      this.toggleDragging();
       var edges: Edge[]=[];
       var helperNodes:any[]=[];
       
@@ -277,6 +344,10 @@ export class AppComponent implements OnInit {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
+  }
+  clearGraph(){
+    this.nodes=[];
+    this.links=[];
   }
 
 }
