@@ -36,7 +36,8 @@
     </div>
     <div class="buttons">
       <button class="button is-danger"(click)="parseString()" [disabled]="inputFormat==0">Render Graph </button>
-      <button class="button is-primary" (click)="clearGraph()">Clear Graph</button>
+      <button class="button is-primary" (click)="ngOnInit()">Clear Graph</button>
+      <button class="button is-info" (click)="helperBinary()">Next </button>
     </div>
     
     <div class="dropdown is-hoverable" style="padding-left: 1rem;padding-right: 1rem;">
@@ -100,12 +101,13 @@
       <!-- graph starts -->
       <ngx-graph class="chart-container" [view]="[1550, 799]" [showMiniMap]="true" [autoCenter]="true" [maxZoomLevel]="2"
         [miniMapMaxHeight]="100" [layout]="layout" [draggingEnabled]="dragging" [panningEnabled]="panning" [animate]="animate"
+        [update$]="update$"
         [center$]="center$"  [links]="links" [nodes]="nodes" [clusters]="clusters" [curve]="curve" [clusters]="clusters">
 
 
         <ng-template #nodeTemplate let-node>
           <svg:g class="node" ngx-tooltip [tooltipPlacement]="'top'" [tooltipType]="'tooltip'"
-            [tooltipTitle]="node.label">
+            [tooltipTitle]="node.label" *ngIf="nodeSetBinary.has(node.id)">
             <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" fill="pink" />
             <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
               {{node.label}}
@@ -113,9 +115,9 @@
           </svg:g>
         </ng-template>
 
-        <ng-template #linkTemplate let-link>
-          <svg:g class="edge">
-            <svg:path class="line" stroke-width="2" marker-end="url(#arrow)"></svg:path>
+        <ng-template #linkTemplate let-link >
+          <svg:g class="edge"  *ngIf="nodeSetBinary.has(link.target)">
+            <svg:path class="line" stroke-width="2" marker-end="url(#arrow)" ></svg:path>
             <svg:text class="edge-label" text-anchor="middle">
               <textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline"
                 startOffset="50%">

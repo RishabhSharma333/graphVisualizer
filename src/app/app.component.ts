@@ -11,24 +11,33 @@ import { Node, Edge, ClusterNode } from '@swimlane/ngx-graph';
 export class AppComponent implements OnInit {
   title = 'visualizer';
   center$: Subject<boolean> = new Subject();
-  // update$: Subject<boolean> = new Subject();
+  update$: Subject<boolean> = new Subject();
   dragging: boolean;
   panning: boolean;
   layout: string;
   links: Edge[];
   nodes: Node[];
-  animate:boolean=false;
+  nodeSetBinary;
+  // edgeSetBinary=new Set<string>();
+  animate: boolean = false;
   clusters: ClusterNode[];
   textForDropdown: string;
   textBoxMessage: string;
   textBoxInput: string;
   textBoxMenu: boolean = false;
-  lineMenu:boolean=false;
-  layoutMenu:boolean=false;
+  lineMenu: boolean = false;
+  layoutMenu: boolean = false;
   inputFormat: number = 0;
+  currForBinary: number = 0;
+
+
+
+  updateGraph() {
+    this.update$.next(true)
+  }
 
   layouts: any[] = [
-   
+
     {
       label: 'Dagre Cluster',
       value: 'dagreCluster',
@@ -51,7 +60,7 @@ export class AppComponent implements OnInit {
     'Monotone X',
     'Monotone Y',
     'Step',
-  ];  
+  ];
 
   curveType: string = 'Bundle';
   curve: any = shape.curveLinear;
@@ -61,7 +70,7 @@ export class AppComponent implements OnInit {
     if (curveType === 'Bundle') {
       this.curve = shape.curveBundle.beta(1);
     }
-    
+
     if (curveType === 'Linear') {
       this.curve = shape.curveLinear;
     }
@@ -71,13 +80,12 @@ export class AppComponent implements OnInit {
     if (curveType === 'Monotone Y') {
       this.curve = shape.curveMonotoneY;
     }
-    
+
     if (curveType === 'Step') {
       this.curve = shape.curveStep;
     }
-    this.lineMenu=false;
+    this.lineMenu = false;
   }
-
 
   ngOnInit() {
     this.links = [
@@ -146,38 +154,34 @@ export class AppComponent implements OnInit {
       }
     ];
 
-    this.clusters=[
+    this.clusters = [
       {
         id: 'third',
         label: 'Cluster node',
-        childNodeIds: ['2','3','4']
+        childNodeIds: ['2', '3', '4']
       },
       {
         id: 'one',
         label: 'Cluster node',
-        childNodeIds: ['5','6']
+        childNodeIds: ['5', '6']
       }
     ];
-    console.log(this.clusters);
 
     this.textBoxMessage = 'use dropdown to select Input Format Type ';
     this.textForDropdown = 'Select Input Type';
+    this.nodeSetBinary=new Set<string>();
 
     this.dragging = true;
     this.panning = true;
     this.layout = 'dagreCluster';
     console.log('printing from ng on in it');
-    // console.log(this.links);
-    // console.log(this.nodes);
   }
   setLayout(layoutName: string): void {
     this.layout = layoutName;
   }
-  toggleLayoutMenu(){
-    this.layoutMenu=!this.layoutMenu;
+  toggleLayoutMenu() {
+    this.layoutMenu = !this.layoutMenu;
   }
-
-  
   toggleDragging() {
     this.dragging = !this.dragging;
   }
@@ -187,7 +191,6 @@ export class AppComponent implements OnInit {
   toggleDropdown() {
     this.textBoxMenu = !this.textBoxMenu;
   }
-  
   centerGraph() {
     this.center$.next(true);
   }
@@ -206,17 +209,14 @@ export class AppComponent implements OnInit {
     }
     else if (num == 2) {
       this.textForDropdown = 'Edge List';
-
       this.textBoxMessage = 'use format as \n [Start Node,End Node]\n [Start Node,End Node]  \n ...';
     }
     else if (num == 3) {
       this.textForDropdown = 'Array (Binary Heap)';
-
       this.textBoxMessage = 'use format as \n normal Array [ ... , ... , ... ]';
     }
     else if (num == 4) {
       this.textForDropdown = 'Weighted Edge List';
-
       this.textBoxMessage = 'use format as \n  [Start Node, weight,End Node ]\n [Start Node, weight,End Node ]';
     }
   }
@@ -250,8 +250,6 @@ export class AppComponent implements OnInit {
       this.links = edges;
       this.nodes = items;
       console.log('printing form adjacency list');
-      // console.log(this.links);
-      // console.log(this.nodes);
 
     }
     else if (this.inputFormat == 2) {
@@ -277,33 +275,22 @@ export class AppComponent implements OnInit {
           edges.push({ id: this.makeid(), source: node, target: adjNode, label: node + adjNode });
         }
       }
-      // console.log(edges);
-      // console.log(items);
       this.links = edges;
       this.nodes = items;
     }
 
     else if (this.inputFormat == 3) {
       this.toggleDragging();
-      var edges: Edge[]=[];
-      var helperNodes:any[]=[];
-      
+      this.clusters = [];
+      this.animate = true;
+      var edges: Edge[] = [];
       var len: number = this.textBoxInput.length;
       if (len > 2) {
         var input: string[] = this.textBoxInput.substr(1, len - 2).split(',');
-        for (let inp of input) {
-          helperNodes.push({ id:this.makeid(), label: inp });
-        }
-
-        this.arrayHelper(helperNodes, edges, helperNodes.length, 0);
-        // console.log(edges);
-        this.links = edges;
-        for(let hel of helperNodes){
-          this.nodes.push({id:hel.id,label:hel.label});
-        }
-        // console.log(this.nodes);
+        this.arrayHelper(this.nodes, this.links, input, input.length, 0, this.makeid());
       }
-
+      console.log(this.nodes);
+      console.log(this.links);
 
     }
     else if (this.inputFormat == 4) {
@@ -327,28 +314,40 @@ export class AppComponent implements OnInit {
             nodeSet.add(adjNode);
             items.push({ id: adjNode, label: adjNode });
           }
-          edges.push({ id: node+adjNode, source: node, target: adjNode, label: weigh });
+          edges.push({ id: node + adjNode, source: node, target: adjNode, label: weigh });
         }
       }
       // console.log(edges);
       this.links = edges;
       this.nodes = items;
     }
-
   }
 
-  arrayHelper(arr:any[], edges: Edge[], len: number, curr: number) {
+  helperBinary() {
+    if (this.currForBinary < this.nodes.length) {
+      this.nodeSetBinary.add(this.nodes[this.currForBinary++].id);
+      console.log(this.nodeSetBinary);
+    }
+  }
+
+  arrayHelper(nodes: Node[], edges: Edge[], arr: string[], len: number, curr: number, currId: string) {
     var left: number = curr * 2 + 1;
     var right: number = curr * 2 + 2;
+    nodes.push({ id: currId, label: arr[curr] });
     if (left < len) {
-      edges.push({ id: arr[curr].id+arr[left].id, source: arr[curr].id, target: arr[left].id, label: left.toString() });
-      this.arrayHelper(arr, edges, len, left);
+      var leftId: string = this.makeid();
+      edges.push({ id: this.makeid(), source: currId, target: leftId, label: left.toString() });
+      this.arrayHelper(nodes, edges, arr, len, left, leftId);
+
     }
     if (right < len) {
-      edges.push({ id: arr[curr].id+arr[right].id, source: arr[curr].id, target: arr[right].id, label: right.toString() });
-      this.arrayHelper(arr, edges, len, right);
+      var rightId: string = this.makeid();
+      edges.push({ id: this.makeid(), source: currId, target: rightId, label: left.toString() });
+      this.arrayHelper(nodes, edges, arr, len, right, rightId);
+
     }
   }
+
 
   makeid() {
     var result = '';
@@ -359,11 +358,13 @@ export class AppComponent implements OnInit {
     }
     return result;
   }
-  clearGraph(){
-    this.nodes=[];
-    this.links=[];
-    this.clusters=[];
-    this.inputFormat=0;
+  
+  wait(ms) {
+    var start = new Date().getTime();
+    var end = start;
+    while (end < start + ms) {
+      end = new Date().getTime();
+    }
   }
 
 }
