@@ -1,1 +1,64 @@
-<router-outlet></router-outlet>
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+<section class="section">
+
+    <div class="columns">
+
+        <div class="column has-text-centered"
+            style=" padding-left:8rem;padding-right: 8rem; padding-top: 8rem;padding-bottom: 8rem;"
+            data-aos="fade-in" data-aos-easing="linear" (click)="goToBinaryHeap()">
+            <div class="card" style="cursor: pointer;">
+                <i class="ri-organization-chart ri-3x"></i>
+                <hr />
+                <h2 class="subtitle">
+                    Binary Heap Algos
+                </h2>
+            </div>
+
+        </div>
+
+
+        <div class="column has-text-centered"
+            style="padding-left:8rem;padding-right: 8rem; padding-top: 8rem;padding-bottom: 8rem;"
+            data-aos="fade-in" data-aos-easing="linear" (click)="goToGraphVisuals()">
+            <div class="card" style="cursor: pointer;">
+                <i class="ri-flow-chart  ri-3x"></i>
+                <hr />
+                <h2 class="subtitle">
+                    Graph Visuals
+                </h2>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="columns">
+
+        <div class="column has-text-centered"
+            style=" padding-left:8rem;padding-right: 8rem; padding-top: 8rem;padding-bottom: 8rem;"
+            data-aos="fade-in" data-aos-easing="linear" (click)="goToGraphAlgos()">
+            <div class="card" style="cursor: pointer;"><i class="ri-mind-map  ri-3x"></i>
+                <hr />
+                <h2 class="subtitle">
+                    Graph Algos
+                </h2>
+            </div>
+
+        </div>
+
+        <div class="column has-text-centered"
+            style=" padding-left:8rem;padding-right: 8rem; padding-top: 8rem;padding-bottom: 8rem;"
+            data-aos="fade-in" data-aos-easing="linear" (click)="goToRecursion()">
+            <div class="card" style="cursor: pointer;"><i class="ri-node-tree  ri-3x"></i>
+                <hr />
+                <h2 class="subtitle">
+                    Recursion Visuals
+                </h2>
+            </div>
+
+        </div>
+
+    </div>
+    <router-outlet></router-outlet>
+
+</section>

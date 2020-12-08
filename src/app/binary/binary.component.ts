@@ -21,11 +21,9 @@ export class BinaryComponent implements OnInit {
   layout: string;
   links: Edge[];
   nodes: Node[];
-  nodeSetBinary;
-  // edgeSetBinary=new Set<string>();
+  nodeSetBinary:Set<string>;
   animate: boolean = false;
   makeEdgeVisible:boolean=false;
-  clusters: ClusterNode[];
   textForDropdown: string;
   textBoxMessage: string;
   textBoxInput: string;
@@ -34,91 +32,11 @@ export class BinaryComponent implements OnInit {
   layoutMenu: boolean = false;
   inputFormat: number = 0;
   currForBinary: number = 0;
+
   ngOnInit(): void {
-    this.links = [
-      {
-        id: 'a',
-        source: '1',
-        target: '2',
-        label: 'custom Label'
-      },
-      {
-        id: 'b',
-        source: '1',
-        target: '3',
-        label: 'custom Label'
-      },
-      {
-        id: 'c',
-        source: '3',
-        target: '4',
-        label: 'custom Label'
-      },
-      {
-        id: 'd',
-        source: '3',
-        target: '5',
-        label: 'custom Label'
-      },
-      {
-        id: 'e',
-        source: '4',
-        target: '5',
-        label: 'custom Label'
-      },
-      {
-        id: 'f',
-        source: '2',
-        target: '6',
-        label: 'custom Label'
-      }
-    ];
-
-    this.nodes = [
-      {
-        id: '1',
-        label: 'Node A'
-      },
-      {
-        id: '2',
-        label: 'Node B'
-      },
-      {
-        id: '3',
-        label: 'Node C'
-      },
-      {
-        id: '4',
-        label: 'Node D'
-      },
-      {
-        id: '5',
-        label: 'Node E'
-      },
-      {
-        id: '6',
-        label: 'Node F'
-      }
-    ];
-
-    this.clusters = [
-      {
-        id: 'third',
-        label: 'Cluster node',
-        childNodeIds: ['2', '3', '4']
-      },
-      {
-        id: 'one',
-        label: 'Cluster node',
-        childNodeIds: ['5', '6']
-      }
-    ];
-
-    this.textBoxMessage = 'use dropdown to select Input Format Type ';
-    this.textForDropdown = 'Select Input Type';
     this.nodeSetBinary=new Set<string>();
-
-    this.dragging = true;
+    this.textBoxMessage='Input an Array to Make Its Binary Heap';
+    this.dragging = false;
     this.panning = true;
     this.layout = 'dagreCluster';
     console.log('printing from ng on in it');
@@ -129,55 +47,26 @@ export class BinaryComponent implements OnInit {
     this.update$.next(true)
   }
 
-  layouts: any[] = [
-
-    {
-      label: 'Dagre Cluster',
-      value: 'dagreCluster',
-      isClustered: true,
-    },
-    {
-      label: 'Cola Force Directed',
-      value: 'colaForceDirected',
-      isClustered: true,
-    },
-    {
-      label: 'D3 Force Directed',
-      value: 'd3ForceDirected',
-    },
-  ];
-
   interpolationTypes = [
-    'Bundle',
     'Linear',
     'Monotone X',
-    'Monotone Y',
-    'Step',
+    'Step'
   ];
 
-  curveType: string = 'Bundle';
+  curveType: string = 'Linear';
   curve: any = shape.curveLinear;
 
   setInterpolationType(curveType) {
     this.curveType = curveType;
-    if (curveType === 'Bundle') {
-      this.curve = shape.curveBundle.beta(1);
-    }
-
     if (curveType === 'Linear') {
       this.curve = shape.curveLinear;
     }
     if (curveType === 'Monotone X') {
       this.curve = shape.curveMonotoneX;
     }
-    if (curveType === 'Monotone Y') {
-      this.curve = shape.curveMonotoneY;
-    }
-
     if (curveType === 'Step') {
       this.curve = shape.curveStep;
     }
-    this.lineMenu = false;
   }
 
   
@@ -200,10 +89,6 @@ export class BinaryComponent implements OnInit {
     this.center$.next(true);
   }
 
-  // updateGraph() {
-  //   this.update$.next(true)
-  // }
-
   selectType(num: number) {
     this.toggleDropdown();
     this.textBoxInput = '';
@@ -212,24 +97,13 @@ export class BinaryComponent implements OnInit {
       this.textForDropdown = 'Adjacency List';
       this.textBoxMessage = 'use format as \n Node:[Array of adjacent Nodes] \n Node:[Array of adjacent Nodes]\n...';
     }
-    else if (num == 2) {
-      this.textForDropdown = 'Edge List';
-      this.textBoxMessage = 'use format as \n [Start Node,End Node]\n [Start Node,End Node]  \n ...';
-    }
-    else if (num == 3) {
-      this.textForDropdown = 'Array (Binary Heap)';
-      this.textBoxMessage = 'use format as \n normal Array [ ... , ... , ... ]';
-    }
-    else if (num == 4) {
-      this.textForDropdown = 'Weighted Edge List';
-      this.textBoxMessage = 'use format as \n  [Start Node, weight,End Node ]\n [Start Node, weight,End Node ]';
-    }
+    
   }
 
   parseString() {
     this.nodes = [];
     this.links = [];
-    if (this.inputFormat == 1) {
+   
       var items: Node[] = [];
       var edges: Edge[] = [];
       var len: number = this.textBoxInput.length;
@@ -256,77 +130,6 @@ export class BinaryComponent implements OnInit {
       this.nodes = items;
       console.log('printing form adjacency list');
 
-    }
-    else if (this.inputFormat == 2) {
-      var items: Node[] = [];
-      var edges: Edge[] = [];
-      var len: number = this.textBoxInput.length;
-      var input: string[] = this.textBoxInput.split('\n');
-      var nodeSet = new Set<string>();
-      for (let st of input) {
-        var len = st.length;
-        if (len >= 3) {
-          var list = st.substr(1, len - 2).split(',');
-          var node = list[0];
-          var adjNode = list[1];
-          if (!nodeSet.has(node)) {
-            nodeSet.add(node);
-            items.push({ id: node, label: node });
-          }
-          if (!nodeSet.has(adjNode)) {
-            nodeSet.add(adjNode);
-            items.push({ id: adjNode, label: adjNode });
-          }
-          edges.push({ id: this.makeid(), source: node, target: adjNode, label: node + adjNode });
-        }
-      }
-      this.links = edges;
-      this.nodes = items;
-    }
-
-    else if (this.inputFormat == 3) {
-      this.toggleDragging();
-      this.clusters = [];
-      this.animate = true;
-      var edges: Edge[] = [];
-      var len: number = this.textBoxInput.length;
-      if (len > 2) {
-        var input: string[] = this.textBoxInput.substr(1, len - 2).split(',');
-        this.arrayHelper(this.nodes, this.links, input, input.length, 0, this.makeid());
-      }
-      console.log(this.nodes);
-      console.log(this.links);
-
-    }
-    
-    else if (this.inputFormat == 4) {
-      var items: Node[] = [];
-      var edges: Edge[] = [];
-      var len: number = this.textBoxInput.length;
-      var input: string[] = this.textBoxInput.split('\n');
-      var nodeSet = new Set<string>();
-      for (let st of input) {
-        var len = st.length;
-        if (len >= 3) {
-          var list = st.substr(1, len - 2).split(',');
-          var node = list[0];
-          var adjNode = list[2];
-          var weigh = list[1];
-          if (!nodeSet.has(node)) {
-            nodeSet.add(node);
-            items.push({ id: node, label: node });
-          }
-          if (!nodeSet.has(adjNode)) {
-            nodeSet.add(adjNode);
-            items.push({ id: adjNode, label: adjNode });
-          }
-          edges.push({ id: node + adjNode, source: node, target: adjNode, label: weigh });
-        }
-      }
-      // console.log(edges);
-      this.links = edges;
-      this.nodes = items;
-    }
   }
   
   helperBinary() {
@@ -390,5 +193,11 @@ export class BinaryComponent implements OnInit {
     while (end < start + ms) {
       end = new Date().getTime();
     }
+  }
+  clearGraph(){
+    this.nodes=[];
+    this.textBoxInput='';
+    this.links=[];
+    this.nodeSetBinary.clear();
   }
 }

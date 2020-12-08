@@ -7,11 +7,17 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { BinaryComponent } from './binary/binary.component';
+import { GraphVisualComponent } from './graph-visual/graph-visual.component';
+import { GraphAlgosComponent } from './graph-algos/graph-algos.component';
+import { RecursionComponent } from './recursion/recursion.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    BinaryComponent
+    BinaryComponent,
+    GraphVisualComponent,
+    GraphAlgosComponent,
+    RecursionComponent
   ],
   imports: [
     BrowserModule,

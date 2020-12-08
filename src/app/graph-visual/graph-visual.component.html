@@ -2,15 +2,41 @@
 <div class="columns">
   <div class="column is-2" style="background-color: rgb(42, 0, 42);">
 
+    <div class="dropdown " [ngClass]="{'is-active':textBoxMenu}">
+      <div class="dropdown-trigger">
+        <button class="button is-danger" aria-haspopup="true" aria-controls="dropdown-menu" (click)="toggleDropdown()">
+          <span>{{textForDropdown}}</span>
+          <span class="icon is-small">
+            <i class="ri-arrow-down-s-line"></i>
+          </span>
+        </button>
+      </div>
+      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+        <div class="dropdown-content">
+          <a  class="dropdown-item"(click)="selectType(1)">
+            Adjacency List
+          </a>
+          <a  class="dropdown-item" (click)="selectType(2)">
+            Edge List
+          </a>
+          <a  class="dropdown-item" (click)="selectType(3)">
+            Array (Binary Heap)
+          </a>
+          <a  class="dropdown-item" (click)="selectType(4)">
+            Weighted Edge List
+          </a>
+        </div>
+      </div>
+    </div>
+
     <div class="field">
       <div class="control">
         <textarea class="textarea" rows="8" placeholder="{{textBoxMessage}}" [disabled]="inputFormat==0" [(ngModel)]=textBoxInput></textarea>
       </div>
     </div>
-
     <div class="buttons">
       <button class="button is-danger"(click)="parseString()" [disabled]="inputFormat==0">Render Graph </button>
-      <button class="button is-primary" (click)="clearGraph()">Clear Graph</button>
+      <button class="button is-primary" (click)="ngOnInit()">Clear Graph</button>
       <button class="button is-info" (click)="helperBinary()">Next </button>
     </div>
     
@@ -32,6 +58,26 @@
       </div>
     </div>
     
+
+   
+    <div class="dropdown is-hoverable "style="padding-right:-2rem" >
+      <div class="dropdown-trigger">
+        <button class="button is-danger" aria-haspopup="true" aria-controls="dropdown-menu" >
+          <span>{{layout}}</span>
+          <span class="icon is-small">
+            <i class="ri-arrow-down-s-line"></i>
+          </span>
+        </button>
+      </div>
+      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+        <div class="dropdown-content">
+          <a  *ngFor="let lay of layouts" class="dropdown-item" (click)="setLayout(lay.value)" >
+            {{lay.label}}
+          </a>
+          
+        </div>
+      </div>
+    </div>
   </div>
 
 
@@ -56,8 +102,7 @@
       <ngx-graph class="chart-container" [view]="[1550, 799]" [showMiniMap]="true" [autoCenter]="true" [maxZoomLevel]="2"
         [miniMapMaxHeight]="100" [layout]="layout" [draggingEnabled]="dragging" [panningEnabled]="panning" [animate]="animate"
         [update$]="update$" [minZoomLevel]="0.5"
-        [center$]="center$"  [links]="links" [nodes]="nodes" [curve]="curve">
-        
+        [center$]="center$"  [links]="links" [nodes]="nodes" [clusters]="clusters" [curve]="curve">
         <ng-template #nodeTemplate let-node>
           <svg:g class="node" ngx-tooltip [tooltipPlacement]="'top'" [tooltipType]="'tooltip'"
             [tooltipTitle]="node.label" *ngIf="nodeSetBinary.has(node.id)">
@@ -88,7 +133,23 @@
           </svg:marker>
         </ng-template>
 
-        
+        <ng-template #clusterTemplate let-cluster>
+          <svg:g
+            class="node cluster"
+            ngx-tooltip
+            [tooltipPlacement]="'top'"
+            [tooltipType]="'tooltip'"
+            [tooltipTitle]="cluster.label"
+          >
+            <svg:rect
+              rx="5"
+              ry="5"
+              [attr.width]="cluster.dimension.width"
+              [attr.height]="cluster.dimension.height"
+              [attr.fill]="cluster.data.color"
+            />
+          </svg:g>
+        </ng-template>
 
 
       </ngx-graph>
