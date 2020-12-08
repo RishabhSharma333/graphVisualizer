@@ -6,10 +6,12 @@ import { AppComponent } from './app.component';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
+import { BinaryComponent } from './binary/binary.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    BinaryComponent
   ],
   imports: [
     BrowserModule,
