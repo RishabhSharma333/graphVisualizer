@@ -1,6 +1,6 @@
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
 <div class="columns">
-  <div class="column is-2" style="background-color: rgb(42, 0, 42);">
+  <div class="column is-2" style="background-color: rgb(0, 64, 85);">
 
     <div class="dropdown " [ngClass]="{'is-active':textBoxMenu}">
       <div class="dropdown-trigger">
@@ -38,6 +38,11 @@
       <button class="button is-danger"(click)="parseString()" [disabled]="inputFormat==0">Render Graph </button>
       <button class="button is-primary" (click)="ngOnInit()">Clear Graph</button>
       <button class="button is-info" (click)="helperBinary()">Next </button>
+        <button class="button is-primary" (click)="toggleDragging()"> Dragging <i *ngIf="dragging" class="ri-check-double-line">
+          </i> </button>
+        <button class="button is-primary" (click)="togglePanning()"> Panning <i *ngIf="panning"
+            class="ri-check-double-line"></i></button>
+        <button class="button is-primary" (click)="centerGraph()"> Center</button>
     </div>
     
     <div class="dropdown is-hoverable" style="padding-left: 1rem;padding-right: 1rem;">
@@ -81,17 +86,17 @@
   </div>
 
 
-  <div class="column is-10" style="background-color: rgb(42, 0, 42);padding-right: 3rem; padding-top: 2rem;">
+  <div class="column is-10" style="background-color: rgb(0, 64, 85);padding-right: 3rem; padding-top: 2rem;">
     <div class="row" style="height: 4rem;">
-      <div class="column">
-        <div class="buttons">
-          <button class="button is-primary" (click)="toggleDragging()"> Dragging <i *ngIf="dragging" class="ri-check-double-line">
-            </i> </button>
-          <button class="button is-primary" (click)="togglePanning()"> Panning <i *ngIf="panning"
-              class="ri-check-double-line"></i></button>
-          <button class="button is-primary" (click)="centerGraph()"> Center</button>
+      <div class="columns">
+        <div class="column is-2" style="padding-top: 0rem; padding-left: 4rem;" >
+          <button class="button  is-rounded is-medium" (click)="helperBinary()">Next
+              <i class="ri-play-line ri-2x" style="padding-left:1rem;"></i>
+          </button>
           
         </div>
+        <div class="column is-10"> <progress class="progress is-info is-large" value="90" max="100">90%</progress></div>
+
       </div>
     </div>
 
