@@ -4,7 +4,7 @@
 
     <div class="dropdown " [ngClass]="{'is-active':textBoxMenu}">
       <div class="dropdown-trigger">
-        <button class="button is-danger" aria-haspopup="true" aria-controls="dropdown-menu" (click)="toggleDropdown()">
+        <button class="button is-rounded" aria-haspopup="true" aria-controls="dropdown-menu" (click)="toggleDropdown()">
           <span>{{textForDropdown}}</span>
           <span class="icon is-small">
             <i class="ri-arrow-down-s-line"></i>
@@ -19,9 +19,6 @@
           <a  class="dropdown-item" (click)="selectType(2)">
             Edge List
           </a>
-          <a  class="dropdown-item" (click)="selectType(3)">
-            Array (Binary Heap)
-          </a>
           <a  class="dropdown-item" (click)="selectType(4)">
             Weighted Edge List
           </a>
@@ -31,23 +28,24 @@
 
     <div class="field">
       <div class="control">
-        <textarea class="textarea" rows="8" placeholder="{{textBoxMessage}}" [disabled]="inputFormat==0" [(ngModel)]=textBoxInput></textarea>
+        <textarea class="textarea" rows="14" style="border-radius: 2rem;" placeholder="{{textBoxMessage}}" [disabled]="inputFormat==0" [(ngModel)]=textBoxInput></textarea>
       </div>
     </div>
     <div class="buttons">
-      <button class="button is-danger"(click)="parseString()" [disabled]="inputFormat==0">Render Graph </button>
-      <button class="button is-primary" (click)="ngOnInit()">Clear Graph</button>
-      <button class="button is-info" (click)="helperBinary()">Next </button>
-        <button class="button is-primary" (click)="toggleDragging()"> Dragging <i *ngIf="dragging" class="ri-check-double-line">
+      <button class="button is-info is-rounded"(click)="parseString()" [disabled]="inputFormat==0">Render Graph </button>
+      <button class="button is-info is-rounded" (click)="ngOnInit()">Clear Graph</button>
+        <button class="button is-info is-rounded" (click)="toggleDragging()"> Dragging <i *ngIf="dragging" class="ri-check-double-line">
           </i> </button>
-        <button class="button is-primary" (click)="togglePanning()"> Panning <i *ngIf="panning"
+        <button class="button is-info is-rounded" (click)="togglePanning()"> Panning <i *ngIf="panning"
             class="ri-check-double-line"></i></button>
-        <button class="button is-primary" (click)="centerGraph()"> Center</button>
+        <button class="button is-info is-rounded" (click)="centerGraph()"> Center</button>
+        <button class="button is-info is-rounded" (click)="toggleIsGraphDirected()"> {{isDirected?'Directed':'Non-Directed'}}</button>
+
     </div>
     
     <div class="dropdown is-hoverable" style="padding-left: 1rem;padding-right: 1rem;">
       <div class="dropdown-trigger">
-        <button class="button is-danger" aria-haspopup="true" aria-controls="dropdown-menu">
+        <button class="button is-info is-rounded" aria-haspopup="true" aria-controls="dropdown-menu">
           <span>{{curveType}}</span>
           <span class="icon is-small">
             <i class="ri-arrow-down-s-line"></i>
@@ -67,7 +65,7 @@
    
     <div class="dropdown is-hoverable "style="padding-right:-2rem" >
       <div class="dropdown-trigger">
-        <button class="button is-danger" aria-haspopup="true" aria-controls="dropdown-menu" >
+        <button class="button is-info is-rounded" aria-haspopup="true" aria-controls="dropdown-menu" >
           <span>{{layout}}</span>
           <span class="icon is-small">
             <i class="ri-arrow-down-s-line"></i>
@@ -90,12 +88,12 @@
     <div class="row" style="height: 4rem;">
       <div class="columns">
         <div class="column is-2" style="padding-top: 0rem; padding-left: 4rem;" >
-          <button class="button  is-rounded is-medium" (click)="helperBinary()">Next
+          <button class="button  is-rounded is-medium" >Next
               <i class="ri-play-line ri-2x" style="padding-left:1rem;"></i>
           </button>
           
         </div>
-        <div class="column is-10"> <progress class="progress is-info is-large" value="90" max="100">90%</progress></div>
+        <div class="column is-10"> <progress class="progress is-info is-rounded is-large" value="90" max="100">90%</progress></div>
 
       </div>
     </div>
@@ -108,10 +106,12 @@
         [miniMapMaxHeight]="100" [layout]="layout" [draggingEnabled]="dragging" [panningEnabled]="panning" [animate]="animate"
         [update$]="update$" [minZoomLevel]="0.5"
         [center$]="center$"  [links]="links" [nodes]="nodes" [clusters]="clusters" [curve]="curve">
+
+
         <ng-template #nodeTemplate let-node>
           <svg:g class="node" ngx-tooltip [tooltipPlacement]="'top'" [tooltipType]="'tooltip'"
-            [tooltipTitle]="node.label" *ngIf="nodeSetBinary.has(node.id)">
-            <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.color" />
+            [tooltipTitle]="node.label">
+            <svg:circle [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.cx]=" node.dimension.height/2" [attr.cy]="node.dimension.width/2 " [attr.fill]="node.data.color" [attr.r]="20"/>
             <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
               {{node.label}}
             </svg:text>
@@ -120,10 +120,9 @@
 
         <ng-template #linkTemplate let-link >
           <svg:g class="edge" 
-          *ngIf="makeEdgeVisible"
           >
             <svg:path class="line" stroke-width="2" marker-end="url(#arrow)" ></svg:path>
-            <svg:text class="edge-label" text-anchor="middle" >
+            <svg:text class="edge-label" text-anchor="middle" *ngIf="inputFormat==4">
               <textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline"
                 startOffset="50%">
                 {{link.label}}
@@ -132,7 +131,7 @@
           </svg:g>
         </ng-template>
 
-        <ng-template #defsTemplate>
+        <ng-template #defsTemplate *ngIf="isDirected">
           <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
             <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
           </svg:marker>

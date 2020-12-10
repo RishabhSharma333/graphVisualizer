@@ -17,109 +17,82 @@ export class RecursionComponent implements OnInit {
   update$: Subject<boolean> = new Subject();
   dragging: boolean;
   panning: boolean;
+  progress: number ;
   layout: string;
   links: Edge[];
   nodes: Node[];
-  nodeSetBinary;
-  animate: boolean = false;
-  makeEdgeVisible:boolean=false;
-  clusters: ClusterNode[];
-  textForDropdown: string;
+  fibonacciSeries: number[] = [];
+  nodeSet: Set<string>;
+  edgeSet: Set<string>;
+  animate: boolean = true;
+  makeEdgeVisible: boolean = false;
+  doingAlgo: boolean = false;
   textBoxMessage: string;
   textBoxInput: string;
   textBoxMenu: boolean = false;
   lineMenu: boolean = false;
-  layoutMenu: boolean = false;
   inputFormat: number = 0;
-  currForBinary: number = 0;
+  options: any[] = [];
+  algoType: string;
+  fNodeLength:number;
+  counting:number;
+
   ngOnInit(): void {
-    this.links = [
-      {
-        id: 'a',
-        source: '1',
-        target: '2',
-        label: 'custom Label'
-      },
-      {
-        id: 'b',
-        source: '1',
-        target: '3',
-        label: 'custom Label'
-      },
-      {
-        id: 'c',
-        source: '3',
-        target: '4',
-        label: 'custom Label'
-      },
-      {
-        id: 'd',
-        source: '3',
-        target: '5',
-        label: 'custom Label'
-      },
-      {
-        id: 'e',
-        source: '4',
-        target: '5',
-        label: 'custom Label'
-      },
-      {
-        id: 'f',
-        source: '2',
-        target: '6',
-        label: 'custom Label'
-      }
-    ];
-
-    this.nodes = [
-      {
-        id: '1',
-        label: 'Node A'
-      },
-      {
-        id: '2',
-        label: 'Node B'
-      },
-      {
-        id: '3',
-        label: 'Node C'
-      },
-      {
-        id: '4',
-        label: 'Node D'
-      },
-      {
-        id: '5',
-        label: 'Node E'
-      },
-      {
-        id: '6',
-        label: 'Node F'
-      }
-    ];
-
-    this.clusters = [
-      {
-        id: 'third',
-        label: 'Cluster node',
-        childNodeIds: ['2', '3', '4']
-      },
-      {
-        id: 'one',
-        label: 'Cluster node',
-        childNodeIds: ['5', '6']
-      }
-    ];
-
-    this.textBoxMessage = 'use dropdown to select Input Format Type ';
-    this.textForDropdown = 'Select Input Type';
-    this.nodeSetBinary=new Set<string>();
-
-    this.dragging = true;
+    this.progress=0;
+    this.nodeSet= new Set<string>();
+    this.makeEdgeVisible=false;
+    this.edgeSet = new Set<string>();
+    this.textBoxMessage = 'Select one of the algorithms for illustration';
+    this.dragging = false;
+    this.textBoxInput = '';
     this.panning = true;
+    this.nodes = [];
+    this.doingAlgo=false;
+    this.links = [];
+    this.counting=0;
+    this.fibonacciSeries = [0
+      , 1
+      , 1
+      , 2
+      , 3
+      , 5
+      , 8
+      , 13
+      , 21
+      , 34
+      , 55
+      , 89
+      , 144
+      , 233
+      , 377
+      , 610
+      , 987
+      , 1597
+      , 2584
+      , 4181
+      , 6765
+      , 10946
+      , 17711
+      , 28657
+      , 46368
+      , 75025
+      , 121393
+      , 196418
+      , 317811
+      , 514229];
+    //0 to 29
     this.layout = 'dagreCluster';
-    console.log('printing from ng on in it');
+    this.options = [
+      { value: 'Fibonacci', id: 'fibonacci' },
+      { value: 'Factorial', id: 'factorial' },
+      { value: 'Fast Exponentiaion', id: 'exponentiation' },
+      { value: 'Subset Sum', id: 'subsetSum' },
+      { value: '0-1 Knapsack', id: 'knapsack' },
+      { value: 'Coin Change', id: 'coinChange' }
+
+    ];
+    this.algoType = 'fibonacci';
+    console.log('printing from recursion');
   }
 
 
@@ -127,64 +100,28 @@ export class RecursionComponent implements OnInit {
     this.update$.next(true)
   }
 
-  layouts: any[] = [
-
-    {
-      label: 'Dagre Cluster',
-      value: 'dagreCluster',
-      isClustered: true,
-    },
-    {
-      label: 'Cola Force Directed',
-      value: 'colaForceDirected',
-      isClustered: true,
-    },
-    {
-      label: 'D3 Force Directed',
-      value: 'd3ForceDirected',
-    },
-  ];
-
   interpolationTypes = [
-    'Bundle',
     'Linear',
     'Monotone X',
-    'Monotone Y',
-    'Step',
+    'Step'
   ];
 
-  curveType: string = 'Bundle';
+  curveType: string = 'Linear';
   curve: any = shape.curveLinear;
 
   setInterpolationType(curveType) {
     this.curveType = curveType;
-    if (curveType === 'Bundle') {
-      this.curve = shape.curveBundle.beta(1);
-    }
-
     if (curveType === 'Linear') {
       this.curve = shape.curveLinear;
     }
     if (curveType === 'Monotone X') {
       this.curve = shape.curveMonotoneX;
     }
-    if (curveType === 'Monotone Y') {
-      this.curve = shape.curveMonotoneY;
-    }
-
     if (curveType === 'Step') {
       this.curve = shape.curveStep;
     }
-    this.lineMenu = false;
   }
 
-  
-  setLayout(layoutName: string): void {
-    this.layout = layoutName;
-  }
-  toggleLayoutMenu() {
-    this.layoutMenu = !this.layoutMenu;
-  }
   toggleDragging() {
     this.dragging = !this.dragging;
   }
@@ -198,175 +135,235 @@ export class RecursionComponent implements OnInit {
     this.center$.next(true);
   }
 
-  // updateGraph() {
-  //   this.update$.next(true)
-  // }
-
-  selectType(num: number) {
-    this.toggleDropdown();
-    this.textBoxInput = '';
-    this.inputFormat = num;
-   if (num == 2) {
-      this.textForDropdown = 'Edge List';
-      this.textBoxMessage = 'use format as \n [Start Node,End Node]\n [Start Node,End Node]  \n ...';
-    }
-    else if (num == 3) {
-      this.textForDropdown = 'Array (Binary Heap)';
-      this.textBoxMessage = 'use format as \n normal Array [ ... , ... , ... ]';
-    }
-    else if (num == 4) {
-      this.textForDropdown = 'Weighted Edge List';
-      this.textBoxMessage = 'use format as \n  [Start Node, weight,End Node ]\n [Start Node, weight,End Node ]';
-    }
-  }
-
   parseString() {
-    this.nodes = [];
-    this.links = [];
-    if (this.inputFormat == 1) {
-      var items: Node[] = [];
-      var edges: Edge[] = [];
-      var len: number = this.textBoxInput.length;
-      var input: string[] = this.textBoxInput.split('\n');
-      var nodeSet = new Set<string>();
-      for (let st of input) {
-        var list = st.split(':');
-        var node = list[0];
-        var len = list[1].length;
-        var adjList: string[] = list[1].substring(1, len - 1).split(',');
-        if (!nodeSet.has(node)) {
-          nodeSet.add(node);
-          items.push({ id: node, label: node });
-        }
-        for (let str of adjList) {
-          if (!nodeSet.has(str)) {
-            nodeSet.add(str);
-            items.push({ id: str, label: str });
-          }
-          edges.push({ id: this.makeid(), source: node, target: str, label: node + str });
-        }
+    this.toggleDragging();
+    this.animate = true;
+    if (this.algoType == 'fibonacci') {
+      this.setInterpolationType('Monotone X');
+      var num: number = Number(this.textBoxInput);
+      if (num <= 6)
+        this.fibonacci(num, this.makeid());
+      else if (num > 6 && num < 30) {
+        var fibSet: Set<number> = new Set<number>();
+        this.fibonacciBig(num, this.makeid(), fibSet);
       }
-      this.links = edges;
-      this.nodes = items;
-      console.log('printing form adjacency list');
-
+      else {
+        this.textBoxInput = 'use value below 30';
+      }
+      
     }
-    else if (this.inputFormat == 2) {
-      var items: Node[] = [];
-      var edges: Edge[] = [];
-      var len: number = this.textBoxInput.length;
-      var input: string[] = this.textBoxInput.split('\n');
-      var nodeSet = new Set<string>();
-      for (let st of input) {
-        var len = st.length;
-        if (len >= 3) {
-          var list = st.substr(1, len - 2).split(',');
-          var node = list[0];
-          var adjNode = list[1];
-          if (!nodeSet.has(node)) {
-            nodeSet.add(node);
-            items.push({ id: node, label: node });
-          }
-          if (!nodeSet.has(adjNode)) {
-            nodeSet.add(adjNode);
-            items.push({ id: adjNode, label: adjNode });
-          }
-          edges.push({ id: this.makeid(), source: node, target: adjNode, label: node + adjNode });
-        }
-      }
-      this.links = edges;
-      this.nodes = items;
+    else if (this.algoType == 'factorial') {
+      var num: number = Number(this.textBoxInput);
+      if (num <= 20)
+        this.factorial(num, this.makeid());
+      else { this.textBoxInput = 'use value below 20'; }
+    }
+    else if (this.algoType == 'exponentiation') {
+      var inp: string[] = this.textBoxInput.split(',');
+      var a = Number(inp[0]);
+      var n = Number(inp[1]);
+      this.exponentiation(a, n, this.makeid());
+    }
+    else if (this.algoType == 'subsetSum') {
+      var input = this.textBoxInput.split('\n');
+      var sum: number = Number(input[0]);
+      // var array = input[1].substr(1, input1len - 2);
+      // console.log(array);
+      var arr: number[] = input[1].substr(1, input[1].length - 2).split(',').map(Number);
+      // console.log(arr);
+      this.isSubsetSum(arr, arr.length, sum, this.makeid());
+    }
+    else if (this.algoType == 'knapsack') {
+      var input = this.textBoxInput.split('\n');
+      var sum: number = Number(input[0]);
+      var weights: number[] = input[1].substr(1, input[1].length - 2).split(',').map(Number);
+      var values: number[] = input[2].substr(1, input[2].length - 2).split(',').map(Number);
+      this.knapsack(sum, weights, values, weights.length, this.makeid());
+    }
+    else if (this.algoType == 'coinChange') {
+      
+      var input = this.textBoxInput.split('\n');
+      var sum: number = Number(input[0]);
+      var arr: number[] = input[1].substr(1, input[1].length - 2).split(',').map(Number);
+      this.coinChange(arr,arr.length,sum,this.makeid());
     }
 
-    else if (this.inputFormat == 3) {
-      this.toggleDragging();
-      this.clusters = [];
-      this.animate = true;
-      var edges: Edge[] = [];
-      var len: number = this.textBoxInput.length;
-      if (len > 2) {
-        var input: string[] = this.textBoxInput.substr(1, len - 2).split(',');
-        this.arrayHelper(this.nodes, this.links, input, input.length, 0, this.makeid());
-      }
-      console.log(this.nodes);
-      console.log(this.links);
+    console.log(this.nodes);
+    console.log(this.links);
+    this.fNodeLength=this.nodes.length;
+    this.doingAlgo=true;
 
-    }
-    
-    else if (this.inputFormat == 4) {
-      var items: Node[] = [];
-      var edges: Edge[] = [];
-      var len: number = this.textBoxInput.length;
-      var input: string[] = this.textBoxInput.split('\n');
-      var nodeSet = new Set<string>();
-      for (let st of input) {
-        var len = st.length;
-        if (len >= 3) {
-          var list = st.substr(1, len - 2).split(',');
-          var node = list[0];
-          var adjNode = list[2];
-          var weigh = list[1];
-          if (!nodeSet.has(node)) {
-            nodeSet.add(node);
-            items.push({ id: node, label: node });
-          }
-          if (!nodeSet.has(adjNode)) {
-            nodeSet.add(adjNode);
-            items.push({ id: adjNode, label: adjNode });
-          }
-          edges.push({ id: node + adjNode, source: node, target: adjNode, label: weigh });
-        }
-      }
-      // console.log(edges);
-      this.links = edges;
-      this.nodes = items;
-    }
   }
-  
-  helperBinary() {
-    if (this.currForBinary < this.nodes.length) {
-      this.nodeSetBinary.add(this.nodes[this.currForBinary++].id);
-      console.log(this.nodeSetBinary);
-    }
-    else if(this.currForBinary==this.nodes.length){
-      this.makeEdgeVisible=true;
-      this.currForBinary++;
-      this.updateGraph();
+
+  fibonacci(num: number, numId: string) {
+    this.nodes.push({ id: numId, label: num.toString() });
+    if (num == 1 || num == 0) {
+      var newId: string = this.makeid();
+      this.nodes.push({ id: newId, label: this.fibonacciSeries[num].toString() });
+      this.links.push({ id: this.makeid(), source: numId, target: newId, label: ('returns ' + num + '') });
     }
     else {
-      console.log('print');
-      console.log(this.nodes);
-      this.animate=false;
-    var st:string= this.nodes[0].label;
-    this.nodes[0].label=this.nodes[1].label;
-    this.nodes[1].label=st;
-    this.updateGraph();
-    console.log(this.nodes);
-    }
-    
-  }
-
-  arrayHelper(nodes: Node[], edges: Edge[], arr: string[], len: number, curr: number, currId: string) {
-    var left: number = curr * 2 + 1;
-    var right: number = curr * 2 + 2;
-    nodes.push({ id: currId, label: arr[curr] });
-    if (left < len) {
-      var leftId: string = this.makeid();
-      edges.push({ id: this.makeid(), source: currId, target: leftId, label: left.toString() });
-      this.arrayHelper(nodes, edges, arr, len, left, leftId);
-      // setTimeout(()=>{
-      //   console.log('delay done for 300');  
-      //   this.updateGraph();
-      // },1000);
-    }
-    if (right < len) {
-      var rightId: string = this.makeid();
-      edges.push({ id: this.makeid(), source: currId, target: rightId, label: left.toString() });
-      this.arrayHelper(nodes, edges, arr, len, right, rightId);
-
+      var left: string = this.makeid();
+      var right: string = this.makeid();
+      this.links.push({ id: this.makeid(), source: numId, target: left, label: ('returns ' + this.fibonacciSeries[num - 1]) });
+      this.links.push({ id: this.makeid(), source: numId, target: right, label: ('returns ' + this.fibonacciSeries[num - 2]) });
+      this.fibonacci(num - 1, left);
+      this.fibonacci(num - 2, right);
     }
   }
 
+  fibonacciBig(num: number, numId: string, fiboSet: Set<number>) {
+    if (num == 1 || num == 0) {
+      this.nodes.push({ id: numId, label: num.toString() });
+    }
+
+    else {
+      if (fiboSet.has(num)) {
+        this.nodes.push({ id: numId, label: num.toString() });
+      }
+      else {
+        var left: string = this.makeid();
+        var right: string = this.makeid();
+        this.nodes.push({ id: numId, label: num.toString() });
+        this.links.push({ id: this.makeid(), source: numId, target: left, label: ('returns ' + this.fibonacciSeries[num - 1]) });
+        this.links.push({ id: this.makeid(), source: numId, target: right, label: ('returns ' + this.fibonacciSeries[num - 2]) });
+        this.fibonacciBig(num - 1, left, fiboSet);
+        this.fibonacciBig(num - 2, right, fiboSet);
+        fiboSet.add(num);
+      }
+    }
+  }
+
+  factorial(num: number, numId: string) {
+
+    if (num > 1) {
+      this.nodes.push({ id: numId, label: num.toString() });
+      var left = this.makeid();
+      var value = this.factorial(num - 1, left);
+      this.links.push({ id: this.makeid(), source: left, target: numId, label: ('returns ' + value) });
+      return value * num;
+    }
+    else {
+      this.nodes.push({ id: numId, label: num.toString() });
+      return 1;
+    }
+
+  }
+
+  coinChange(arr: number[], n: number, sum: number, numid: string) {
+    if (sum == 0) {
+      this.nodes.push({ id: numid, label: 'got 1' });
+      return 1;
+
+    }
+    else if (sum < 0) {
+      this.nodes.push({ id: numid, label: 'got 0 ' });
+
+      return 0;
+    }
+    if (n <= 0 && sum >= 1) {
+
+      this.nodes.push({ id: numid, label: 'got 0' });
+      return 0;
+    }
+    else {
+      
+      var left = this.makeid();
+      var right = this.makeid();
+      var leftval: number = this.coinChange(arr, n - 1, sum, left);
+      var rightval: number = this.coinChange(arr, n, sum - arr[n - 1], right);
+      this.links.push({ id: this.makeid(), source: left, target: numid, label: 'got ' + leftval });
+      this.links.push({ id: this.makeid(), source: right, target: numid, label: 'got ' + rightval });
+      this.nodes.push({id:numid,label:'('+n+' , '+sum+') - '+(leftval+rightval)});
+      return leftval + rightval;
+    }
+  }
+
+  knapsack(W: number, wt: number[], val: number[], n: number, numid: string) {
+
+    if (n == 0 || W == 0) {
+      this.nodes.push({ id: numid, label: 'got 0' });
+      return 0;
+    }
+
+    else if (wt[n - 1] > W) {
+      var left = this.makeid();
+      var ret = this.knapsack(W, wt, val, n - 1, left);
+      this.nodes.push({ id: numid, label:'('+ W + ' , ' + (n - 1)+')-'+ret });
+      return ret;
+    }
+    else {
+      var left = this.makeid();
+      var right = this.makeid();
+      var leftval: number = val[n-1]+this.knapsack(W - wt[n - 1], wt, val, n - 1, left);
+      var rightval: number = this.knapsack(W, wt, val, n - 1, right);
+      this.links.push({ id: this.makeid(), source: numid, target: left, label: 'got ' + leftval });
+      this.links.push({ id: this.makeid(), source: numid, target: right, label: 'got ' + rightval });
+      var answer:number=Math.max(leftval, rightval);
+      this.nodes.push({ id: numid, label: '('+ W + ' , ' + (n - 1)+')-'+answer});
+
+      return answer;
+    }
+
+  }
+
+  exponentiation(below: number, up: number, id: string) {
+    if (below == 1 || up == 0) {
+      this.nodes.push({ id: id, label: (1).toString() });
+      return 1;
+    }
+    else {
+      if (up % 2 == 0) {
+
+        var left = this.makeid();
+        var value = this.exponentiation(below, up / 2, left);
+        var ret = value * value;
+        this.nodes.push({ id: id, label: ('(' + (below) + ' , ' + (up) + ') - ' + (ret).toString()) });
+        this.links.push({ id: this.makeid(), source: id, target: left, label: ('got ' + ret) });
+
+        return ret;
+      }
+      else {
+
+        var right = this.makeid();
+        var value = this.exponentiation(below, Math.floor(up / 2), right);
+        var rett = value * value * below;
+        this.nodes.push({ id: id, label: ('(' + below + ' , ' + up + ') - ' + (rett).toString()) });
+        this.links.push({ id: this.makeid(), source: id, target: right, label: ('got ' + value * value) });
+        return rett;
+      }
+    }
+  }
+
+  isSubsetSum(arr: number[], n: number, sum: number, numId: string) {
+    if (sum == 0) {
+      this.nodes.push({ id: numId, label: n + ' , ' + sum + 'returns true' });
+      return true;
+    }
+    else if (n == 0) {
+      this.nodes.push({ id: numId, label: n + ' , ' + sum + 'returns false' });
+      return false;
+    }
+
+    else if (arr[n - 1] > sum) {
+      this.nodes.push({ id: numId, label: n + ' , ' + sum });
+      var left: string = this.makeid();
+      var rett = this.isSubsetSum(arr, n - 1, sum, left);
+      this.links.push({ id: this.makeid(), source: numId, target: left, label: 'got ' + rett });
+      return rett;
+    }
+
+    else {
+      this.nodes.push({ id: numId, label: n + ' , ' + sum });
+      var left: string = this.makeid();
+      var right: string = this.makeid();
+      var leftans = this.isSubsetSum(arr, n - 1, sum, left);
+      var rightans = this.isSubsetSum(arr, n - 1, sum - arr[n - 1], right);
+      this.links.push({ id: this.makeid(), source: numId, target: left, label: 'got ' + leftans });
+      this.links.push({ id: this.makeid(), source: numId, target: right, label: 'got ' + rightans });
+      return leftans || rightans;
+    }
+  }
 
   makeid() {
     var result = '';
@@ -377,13 +374,22 @@ export class RecursionComponent implements OnInit {
     }
     return result;
   }
-  
-  wait(ms) {
-    var start = new Date().getTime();
-    var end = start;
-    while (end < start + ms) {
-      end = new Date().getTime();
-    }
+
+  renderSegments(){
+    if(this.counting<this.nodes.length){
+      this.nodeSet.add(this.nodes[this.counting++].id);
+      this.progress=this.counting/this.nodes.length*100;               
+   }
+   else if(this.counting>0&&this.counting==this.nodes.length){
+     this.makeEdgeVisible=true;
+     this.updateGraph();
+   }
   }
 
+  setAlgoType(id: string) {
+    this.algoType = id;
+  }
+  clearGraph(){
+    this.ngOnInit();
+  }
 }

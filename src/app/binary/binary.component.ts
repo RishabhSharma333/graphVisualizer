@@ -23,6 +23,7 @@ export class BinaryComponent implements OnInit {
   links: Edge[];
   nodes: Node[];
   nodeSetBinary: Set<string>;
+  colorSet:Set<string>;
   animate: boolean = true;
   makeEdgeVisible: boolean = false;
   doingAlgo: boolean = false;
@@ -37,6 +38,7 @@ export class BinaryComponent implements OnInit {
 
   ngOnInit(): void {
     this.nodeSetBinary = new Set<string>();
+    this.colorSet=new Set<string>();
     this.textBoxMessage = 'Input an Numeric Array within braces to make a Binary Heap';
     this.dragging = false;
     this.textBoxInput = '';
@@ -180,9 +182,11 @@ export class BinaryComponent implements OnInit {
 
   heapify(n: number, i: number) {
     var largest: number = i;
+    this.colorSet.add(this.nodes[largest].id);
     var l: number = 2 * i + 1;
     var r: number = 2 * i + 2;
     if (l < n) {
+      this.colorSet.add(this.nodes[l].id)
       if (this.makingMaxHeap) {
         if ((Number(this.nodes[l].label) > Number(this.nodes[largest].label))) {
           largest = l;
@@ -195,6 +199,7 @@ export class BinaryComponent implements OnInit {
       }
     }
     if (r < n) {
+      this.colorSet.add(this.nodes[r].id);
       if (this.makingMaxHeap) {
         if ((Number(this.nodes[r].label) > Number(this.nodes[largest].label))) {
           largest = r;
