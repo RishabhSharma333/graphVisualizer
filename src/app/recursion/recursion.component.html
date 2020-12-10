@@ -1,7 +1,7 @@
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
 <div class="columns">
   <div class="column is-2" style="background-color: rgb(75,99,25);">
-
+    
     <div class="field">
       <div class="control">
         <textarea class="textarea" rows="5" style="border-radius:2rem" placeholder="{{textBoxMessage}}"
@@ -9,10 +9,13 @@
       </div>
     </div>
 
+    <div class="column">
     <div class="buttons">
-      <button class="button is-danger is-rounded" (click)="parseString()" [disabled]="doingAlgo">Render Graph </button>
+      <button class="button is-danger is-rounded is-medium" (click)="parseString()" [disabled]="doingAlgo">Render Graph </button>
     </div>
-
+  </div>
+  <hr>
+  <div class="column">
     <div class="buttons">
       <button class="button is-danger is-rounded " (click)="toggleDragging()"> Dragging <i *ngIf="dragging"
           class="ri-check-double-line">
@@ -23,10 +26,11 @@
       <button class="button is-danger is-rounded " (click)="clearGraph()"> Clear</button>
 
     </div>
-
-    <div class="dropdown is-hoverable"   style="padding-left: 1rem;padding-right: 1rem;">
+  </div>
+  <hr>
+  <div class="dropdown is-hoverable" *ngIf="!doingAlgo"  style="padding-left: 1rem;padding-right: 1rem;">
       <div class="dropdown-trigger">
-        <button class="button is-danger" [disabled]="doingAlgo"  aria-haspopup="true" aria-controls="dropdown-menu">
+        <button class="button is-danger" aria-haspopup="true" aria-controls="dropdown-menu">
           <span>{{algoType}}</span>
           <span class="icon is-small">
             <i class="ri-arrow-down-s-line"></i>

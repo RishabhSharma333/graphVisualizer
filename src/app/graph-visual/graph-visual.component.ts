@@ -109,6 +109,9 @@ export class GraphVisualComponent implements OnInit {
   toggleIsGraphDirected(){
     this.isDirected=!this.isDirected;
   }
+  clearGraph(){
+    this.ngOnInit();
+  }
   
 
   selectType(num: number) {
