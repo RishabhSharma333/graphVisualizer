@@ -40,7 +40,7 @@
 
       </div>
     </div>
-  <hr>
+    <hr>
     <div class="dropdown is-hoverable" style="padding-left: 1rem;padding-right: 1rem;">
       <div class="dropdown-trigger">
         <button class="button is-info " aria-haspopup="true" aria-controls="dropdown-menu">
@@ -58,12 +58,12 @@
         </div>
       </div>
     </div>
-     <hr>
-
-    <div class="dropdown is-hoverable " style="padding-left:1rem">
+    <hr>
+    <div class="column">
+      <div class="dropdown is-hoverable"  *ngIf="startPathFinding" style="padding-left: 1rem;padding-right: 1rem;">
       <div class="dropdown-trigger">
-        <button class="button is-info " aria-haspopup="true" aria-controls="dropdown-menu">
-          <span>{{layout}}</span>
+        <button class="button is-info "  aria-haspopup="true" aria-controls="dropdown-menu">
+          <span>{{startNode==null?'Select Start Node':('Start Node: '+startNode)}}</span>
           <span class="icon is-small">
             <i class="ri-arrow-down-s-line"></i>
           </span>
@@ -71,25 +71,48 @@
       </div>
       <div class="dropdown-menu" id="dropdown-menu" role="menu">
         <div class="dropdown-content">
-          <a *ngFor="let lay of layouts" class="dropdown-item" (click)="setLayout(lay.value)">
-            {{lay.label}}
+          <a *ngFor="let node of nodes" class="dropdown-item" (click)="setStartNode(node.id)">
+            {{node.label}}
           </a>
-
         </div>
       </div>
     </div>
-    <hr>
+
+    <div class="dropdown is-hoverable" *ngIf="startPathFinding" style="padding-left: 1rem;padding-right: 1rem;">
+      <div class="dropdown-trigger">
+        <button class="button is-info " aria-haspopup="true" aria-controls="dropdown-menu">
+          <span>{{endNode==null?'Select End Node':('End Node: '+endNode)}}</span>
+          <span class="icon is-small">
+            <i class="ri-arrow-down-s-line"></i>
+          </span>
+        </button>
+      </div>
+      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+        <div class="dropdown-content">
+          <a *ngFor="let node of nodes" class="dropdown-item" (click)="setEndNode(node.id)">
+            {{node.label}}
+          </a>
+        </div>
+      </div>
+    </div>
+    </div>
+    
+
+
+
     <div class="column">
       <div class="buttons">
         <button class="button is-info is-rounded" (click)="clearGraph()">Clear Graph</button>
-          <button class="button is-info is-rounded" (click)="toggleDragging()"> Dragging <i *ngIf="dragging"
-              class="ri-check-double-line">
-            </i> </button>
-          <button class="button is-info is-rounded" (click)="togglePanning()"> Panning <i *ngIf="panning"
-              class="ri-check-double-line"></i></button>
-          <button class="button is-info is-rounded" (click)="centerGraph()"> Center</button>
-          <button class="button is-info is-rounded" (click)="toggleIsGraphDirected()">
-            {{isDirected?'Directed':'Non-Directed'}}</button>
+        <button class="button is-info is-rounded" (click)="toggleDragging()"> Dragging <i *ngIf="dragging"
+            class="ri-check-double-line">
+          </i> </button>
+        <button class="button is-info is-rounded" (click)="togglePanning()"> Panning <i *ngIf="panning"
+            class="ri-check-double-line"></i></button>
+        <button class="button is-info is-rounded" (click)="centerGraph()"> Center</button>
+        <button class="button is-info is-rounded" *ngIf="startNode!=undefined&&endNode!=undefined" (click)="isConnected()"> find Path</button>
+
+        <button class="button is-info is-rounded" (click)="toggleIsGraphDirected()">
+          {{isDirected?'Directed':'Non-Directed'}}</button>
       </div>
     </div>
 

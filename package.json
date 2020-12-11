@@ -23,6 +23,7 @@
     "@swimlane/ngx-graph": "^7.2.0",
     "bulma": "^0.9.1",
     "d3-shape": "^2.0.0",
+    "queue-typescript": "^1.0.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
