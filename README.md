@@ -1,5 +1,8 @@
-# Visualizer
+# Graph Visualizer
+This is a Single page Web App to show graph in visual format to when a input(graph) is taken .
 
+
+##
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.2.0.
 
 ## Development server
