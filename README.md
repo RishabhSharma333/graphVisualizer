@@ -30,9 +30,9 @@ This is a Single page Web App to show graph in visual format to when a input(gra
    It supports Six recusion problems Fibonacci, Fast Exponentiation, Knapsack , Subset Sum,Factorial,Coin Change.<br>
    Input the required values and then It makes all nodes according to call made.<br>
    ### Fibonacci<br> ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/fibonacci.gif)<br>
-   ### knapsack<br> ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/knapsack.gif)<br>
+   ### Knapsack<br> ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/knapsack.gif)<br>
    ### Fast Exponentiation<br> ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/exponentiation.gif)<br>
-   ###Subset Sum <br>![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/subsetSum.gif)<br>
+   ### Subset Sum <br>![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/subsetSum.gif)<br>
     
 
 
