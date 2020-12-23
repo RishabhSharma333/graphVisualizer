@@ -192,6 +192,7 @@ export class RecursionComponent implements OnInit {
     console.log(this.links);
     this.fNodeLength=this.nodes.length;
     this.doingAlgo=true;
+    this.textBoxInput='now use next button to see graphichal dependency';
 
   }
 
@@ -272,8 +273,8 @@ export class RecursionComponent implements OnInit {
       var right = this.makeid();
       var leftval: number = this.coinChange(arr, n - 1, sum, left);
       var rightval: number = this.coinChange(arr, n, sum - arr[n - 1], right);
-      this.links.push({ id: this.makeid(), source: left, target: numid, label: 'got ' + leftval });
-      this.links.push({ id: this.makeid(), source: right, target: numid, label: 'got ' + rightval });
+      this.links.push({ id: this.makeid(), source: numid, target: left, label: 'got ' + leftval });
+      this.links.push({ id: this.makeid(), source: numid, target: right, label: 'got ' + rightval });
       this.nodes.push({id:numid,label:'('+n+' , '+sum+') - '+(leftval+rightval)});
       return leftval + rightval;
     }
@@ -388,8 +389,32 @@ export class RecursionComponent implements OnInit {
 
   setAlgoType(id: string) {
     this.algoType = id;
+    if(id=='fibonacci'){
+      this.textBoxMessage='write number to find fibonacci , for numbers above 6 memoization will be applied';
+    }
+    else if(id=='factorial'){
+      this.textBoxMessage='write number to find factorial ';
+
+    }
+    else if(id=='exponentiation'){
+      this.textBoxMessage='write base,exponent to find base to the power exponent ';
+
+    }
+    else if(id=='knapsack'){
+      this.textBoxMessage='write maximum limit of weight \n write  weights array with in braces \n write values array within braces';
+
+    }
+   else  if(id=='coinChange'){
+      this.textBoxMessage='write sum \n write  coins array within braces ';
+
+    }
+    else if(id=='subsetSum'){
+    this.textBoxMessage='write sum \n write  values array within braces ';
+    }
   }
+
   clearGraph(){
     this.ngOnInit();
   }
+  
 }

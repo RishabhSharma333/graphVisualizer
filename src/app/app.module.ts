@@ -10,6 +10,7 @@ import { BinaryComponent } from './binary/binary.component';
 import { GraphVisualComponent } from './graph-visual/graph-visual.component';
 import { GraphAlgosComponent } from './graph-algos/graph-algos.component';
 import { RecursionComponent } from './recursion/recursion.component';
+import { HomepageComponent } from './homepage/homepage.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { RecursionComponent } from './recursion/recursion.component';
     BinaryComponent,
     GraphVisualComponent,
     GraphAlgosComponent,
-    RecursionComponent
+    RecursionComponent,
+    HomepageComponent
   ],
   imports: [
     BrowserModule,

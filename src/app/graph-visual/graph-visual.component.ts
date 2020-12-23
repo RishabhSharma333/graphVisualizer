@@ -24,7 +24,7 @@ export class GraphVisualComponent implements OnInit {
   weightedAdjList: Map<string, string[]>;
   links: Edge[];
   nodes: Node[];
-  startPathFinding:boolean;
+  startPathFinding: boolean;
   isDirected: boolean = true;
   animate: boolean = false;
   makeEdgeVisible: boolean = false;
@@ -42,7 +42,10 @@ export class GraphVisualComponent implements OnInit {
     this.links = [];
     this.nodes = [];
     this.clusters = [];
-    this.startPathFinding=false;
+    this.startNode='';
+    this.endNode='';
+    this.textBoxInput='';
+    this.startPathFinding = false;
     this.adjListMain = new Map<string, string[]>();
     this.weightedAdjList = new Map<string, string[]>();
     // this.edgeListMain=new Map<string,string>();
@@ -59,8 +62,6 @@ export class GraphVisualComponent implements OnInit {
   updateGraph() {
     this.update$.next(true)
   }
-
-
 
   interpolationTypes = [
     'Bundle',
@@ -86,9 +87,6 @@ export class GraphVisualComponent implements OnInit {
 
     this.lineMenu = false;
   }
-
-
-
   toggleDragging() {
     this.dragging = !this.dragging;
   }
@@ -113,17 +111,13 @@ export class GraphVisualComponent implements OnInit {
     this.toggleDropdown();
     this.textBoxInput = '';
     this.inputFormat = num;
-    if(num==1){
+    if (num == 1) {
       this.textForDropdown = 'Adjacency List';
       this.textBoxMessage = 'use format as \n node:[array of adjacent nodes]\n node:[array of adjacent nodes]  \n ...';
     }
-     else if (num == 2) {
+    else if (num == 2) {
       this.textForDropdown = 'Edge List';
       this.textBoxMessage = 'use format as \n [Start Node,End Node]\n [Start Node,End Node]  \n ...';
-    }
-    else if (num == 3) {
-      this.textForDropdown = 'Array (Binary Heap)';
-      this.textBoxMessage = 'use format as \n normal Array [ ... , ... , ... ]';
     }
     else if (num == 4) {
       this.textForDropdown = 'Weighted Edge List';
@@ -201,7 +195,7 @@ export class GraphVisualComponent implements OnInit {
       console.log(this.adjListMain);
       this.links = edges;
       this.nodes = items;
-      
+
     }
 
     else if (this.inputFormat == 4) {
@@ -232,7 +226,7 @@ export class GraphVisualComponent implements OnInit {
       this.links = edges;
       this.nodes = items;
     }
-    this.startPathFinding=true;
+    this.startPathFinding = true;
   }
 
   makeid() {
@@ -254,37 +248,60 @@ export class GraphVisualComponent implements OnInit {
   }
 
 
-  setStartNode(node: string) {
-    this.startNode = node;
-  }
-  setEndNode(node: string) {
-    this.endNode = node;
-  }
+  // setStartNode(node: string) {
+  //   this.startNode = node;
+  // }
+  // setEndNode(node: string) {
+  //   this.endNode = node;
+  // }
 
   isConnected() {
-
-    var q = new Queue<string>();
-    var discovered = new Set<string>();
-    discovered.add(this.startNode);
-    q.enqueue(this.startNode);
-    while (q.length != 0) {
-
-      var v = q.dequeue();
-      if (v == this.endNode) {
-        this.textBoxInput = 'yes path found';
-        return true;
+    var startNodeFound: boolean = false;
+    var endNodeFound: boolean = false;
+    for (let node of this.nodes) {
+      if (node.label == this.startNode) {
+        startNodeFound = true;
       }
-      if (this.adjListMain.has(v)) {
-        for (let u of this.adjListMain.get(v)) {
-          if (!discovered.has(u)) {
-            discovered.add(u);
-            q.enqueue(u);
+      if (node.label == this.endNode) {
+        endNodeFound = true;
+      }
+    }
+
+    if (startNodeFound && endNodeFound) {
+      console.log('found both');
+      var q = new Queue<string>();
+      var discovered = new Set<string>();
+      discovered.add(this.startNode);
+      q.enqueue(this.startNode);
+      while (q.length != 0) {
+        var v = q.dequeue();
+        if (v == this.endNode) {
+          this.textBoxInput = 'path found from '+this.startNode+' to '+this.endNode;
+          console.log(discovered);
+          return true;
+        }
+        if (this.adjListMain.has(v)) {
+          for (let u of this.adjListMain.get(v)) {
+            if (!discovered.has(u)) {
+              discovered.add(u);
+              q.enqueue(u);
+            }
           }
         }
+
       }
-      
+
+      this.textBoxInput = 'path not found';
+      return false;
     }
-    this.textBoxInput = 'path not found';
-    return false;
+
+    else {
+      if(!startNodeFound)
+      this.textBoxInput='Start Node not present';
+      if(!endNodeFound)
+      this.textBoxInput=this.textBoxInput+'\n End Node not present';
+    }
   }
+
+
 }

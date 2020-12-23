@@ -1,0 +1,18 @@
+.binary{
+    background-image: url(../../gifs/forBinary.png);
+    background-repeat: no-repeat;
+    /* filter: blur(1px); */
+}
+ .recursion{
+    background-image: url(../../gifs/forRecursion.png);
+    background-repeat: no-repeat;
+ }
+ .visuals{
+    background-image: url(../../gifs/forVisuals.jpg);
+    background-repeat: no-repeat;
+ }
+ .algos{
+    background-image: url(../../gifs/forAlgos.png);
+    background-repeat: no-repeat;
+ }
+ 

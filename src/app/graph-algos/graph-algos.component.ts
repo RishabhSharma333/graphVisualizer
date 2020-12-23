@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 
 import { Subject } from 'rxjs';
 import * as shape from 'd3-shape';
+import { Queue } from 'queue-typescript';
 import { Node, Edge, ClusterNode } from '@swimlane/ngx-graph';
+import { sequence } from '@angular/animations';
 
 @Component({
   selector: 'app-graph-algos',
@@ -17,174 +19,91 @@ export class GraphAlgosComponent implements OnInit {
   update$: Subject<boolean> = new Subject();
   dragging: boolean;
   panning: boolean;
+  progress: number;
+  textForAlgo: string;
   layout: string;
+  adjListMain: Map<string, string[]>;
+  weightedAdjList: Map<string, string[]>;
   links: Edge[];
   nodes: Node[];
-  nodeSetBinary;
+  algoType: string;
+  startAlgo: boolean;
+  isDirected: boolean = true;
   animate: boolean = false;
-  makeEdgeVisible:boolean=false;
+  makeEdgeVisible: boolean = false;
+  startNode: string;
+  endNode: string;
   clusters: ClusterNode[];
   textForDropdown: string;
   textBoxMessage: string;
   textBoxInput: string;
+  algoMenu: boolean;
+  doingAlgo: boolean;
+  dfsColor: Set<String>;
   textBoxMenu: boolean = false;
+  varforDfs: number;
   lineMenu: boolean = false;
   layoutMenu: boolean = false;
   inputFormat: number = 0;
-  currForBinary: number = 0;
+  sequenceDfsAdded: string[] = [];
+  dfsSet: Set<string>;
   ngOnInit(): void {
-    this.links = [
-      {
-        id: 'a',
-        source: '1',
-        target: '2',
-        label: 'custom Label'
-      },
-      {
-        id: 'b',
-        source: '1',
-        target: '3',
-        label: 'custom Label'
-      },
-      {
-        id: 'c',
-        source: '3',
-        target: '4',
-        label: 'custom Label'
-      },
-      {
-        id: 'd',
-        source: '3',
-        target: '5',
-        label: 'custom Label'
-      },
-      {
-        id: 'e',
-        source: '4',
-        target: '5',
-        label: 'custom Label'
-      },
-      {
-        id: 'f',
-        source: '2',
-        target: '6',
-        label: 'custom Label'
-      }
-    ];
-
-    this.nodes = [
-      {
-        id: '1',
-        label: 'Node A'
-      },
-      {
-        id: '2',
-        label: 'Node B'
-      },
-      {
-        id: '3',
-        label: 'Node C'
-      },
-      {
-        id: '4',
-        label: 'Node D'
-      },
-      {
-        id: '5',
-        label: 'Node E'
-      },
-      {
-        id: '6',
-        label: 'Node F'
-      }
-    ];
-
-    this.clusters = [
-      {
-        id: 'third',
-        label: 'Cluster node',
-        childNodeIds: ['2', '3', '4']
-      },
-      {
-        id: 'one',
-        label: 'Cluster node',
-        childNodeIds: ['5', '6']
-      }
-    ];
-
+    this.links = [];
+    this.varforDfs = 0;
+    this.textForAlgo = 'Select Algo Type';
+    this.nodes = [];
+    this.clusters = [];
+    this.startNode = '';
+    this.endNode = '';
+    this.dfsSet = new Set<string>();
+    this.progress = 0;
+    this.textBoxInput = '';
+    this.algoMenu = false;
+    this.algoType = '';
+    this.dfsColor = new Set<string>();
+    this.startAlgo = false;
+    this.doingAlgo = false;
+    this.adjListMain = new Map<string, string[]>();
+    this.weightedAdjList = new Map<string, string[]>();
+    // this.edgeListMain=new Map<string,string>();
     this.textBoxMessage = 'use dropdown to select Input Format Type ';
     this.textForDropdown = 'Select Input Type';
-    this.nodeSetBinary=new Set<string>();
 
     this.dragging = true;
+    this.sequenceDfsAdded = [];
     this.panning = true;
-    this.layout = 'dagreCluster';
-    console.log('printing from ng on in it');
+    this.layout = 'colaForceDirected';
+    console.log('printing from graph algos on in it');
   }
 
-
+  toggleAlgoDropdown() {
+    this.algoMenu != this.algoMenu;
+  }
   updateGraph() {
     this.update$.next(true)
   }
 
-  layouts: any[] = [
-
-    {
-      label: 'Dagre Cluster',
-      value: 'dagreCluster',
-      isClustered: true,
-    },
-    {
-      label: 'Cola Force Directed',
-      value: 'colaForceDirected',
-      isClustered: true,
-    },
-    {
-      label: 'D3 Force Directed',
-      value: 'd3ForceDirected',
-    },
-  ];
-
   interpolationTypes = [
     'Bundle',
     'Linear',
-    'Monotone X',
-    'Monotone Y',
-    'Step',
+    'Monotone X'
   ];
 
   curveType: string = 'Bundle';
   curve: any = shape.curveLinear;
-
-  setInterpolationType(curveType) {
-    this.curveType = curveType;
-    if (curveType === 'Bundle') {
-      this.curve = shape.curveBundle.beta(1);
+  selectAlgo(num: number) {
+    if (num == 1) {
+      this.algoType = 'dfs';
+      this.textForAlgo = 'Depth First Traversal';
+      // console.log('clicked');
     }
-
-    if (curveType === 'Linear') {
-      this.curve = shape.curveLinear;
+    else if (num == 2) {
+      this.algoType = 'bfs';
+      this.textForAlgo = 'Breadth First Traversal';
     }
-    if (curveType === 'Monotone X') {
-      this.curve = shape.curveMonotoneX;
-    }
-    if (curveType === 'Monotone Y') {
-      this.curve = shape.curveMonotoneY;
-    }
-
-    if (curveType === 'Step') {
-      this.curve = shape.curveStep;
-    }
-    this.lineMenu = false;
+    this.startAlgo = true;
   }
 
-  
-  setLayout(layoutName: string): void {
-    this.layout = layoutName;
-  }
-  toggleLayoutMenu() {
-    this.layoutMenu = !this.layoutMenu;
-  }
   toggleDragging() {
     this.dragging = !this.dragging;
   }
@@ -197,22 +116,25 @@ export class GraphAlgosComponent implements OnInit {
   centerGraph() {
     this.center$.next(true);
   }
+  toggleIsGraphDirected() {
+    this.isDirected = !this.isDirected;
+  }
+  clearGraph() {
+    this.ngOnInit();
+  }
 
-  // updateGraph() {
-  //   this.update$.next(true)
-  // }
 
   selectType(num: number) {
     this.toggleDropdown();
     this.textBoxInput = '';
     this.inputFormat = num;
-   if (num == 2) {
+    if (num == 1) {
+      this.textForDropdown = 'Adjacency List';
+      this.textBoxMessage = 'use format as \n node:[array of adjacent nodes]\n node:[array of adjacent nodes]  \n ...';
+    }
+    else if (num == 2) {
       this.textForDropdown = 'Edge List';
       this.textBoxMessage = 'use format as \n [Start Node,End Node]\n [Start Node,End Node]  \n ...';
-    }
-    else if (num == 3) {
-      this.textForDropdown = 'Array (Binary Heap)';
-      this.textBoxMessage = 'use format as \n normal Array [ ... , ... , ... ]';
     }
     else if (num == 4) {
       this.textForDropdown = 'Weighted Edge List';
@@ -224,33 +146,33 @@ export class GraphAlgosComponent implements OnInit {
     this.nodes = [];
     this.links = [];
     if (this.inputFormat == 1) {
-      var items: Node[] = [];
-      var edges: Edge[] = [];
-      var len: number = this.textBoxInput.length;
       var input: string[] = this.textBoxInput.split('\n');
       var nodeSet = new Set<string>();
       for (let st of input) {
-        var list = st.split(':');
+        var list: string[] = st.split(':');
         var node = list[0];
-        var len = list[1].length;
-        var adjList: string[] = list[1].substring(1, len - 1).split(',');
+        var adjlen: number = list[1].length;
+        var adjList: string[] = list[1].substring(1, adjlen - 1).split(',');
+        this.adjListMain.set(node, adjList);
         if (!nodeSet.has(node)) {
           nodeSet.add(node);
-          items.push({ id: node, label: node });
+          this.nodes.push({ id: node, label: node });
         }
         for (let str of adjList) {
           if (!nodeSet.has(str)) {
             nodeSet.add(str);
-            items.push({ id: str, label: str });
+            this.nodes.push({ id: str, label: str });
           }
-          edges.push({ id: this.makeid(), source: node, target: str, label: node + str });
+          this.links.push({ id: this.makeid(), source: node, target: str, label: node + str });
         }
       }
-      this.links = edges;
-      this.nodes = items;
       console.log('printing form adjacency list');
-      this.updateGraph();
+      console.log('printing from 1');
+      console.log(this.adjListMain);
+      // console.log(this.nodes);
+
     }
+
     else if (this.inputFormat == 2) {
       var items: Node[] = [];
       var edges: Edge[] = [];
@@ -263,6 +185,18 @@ export class GraphAlgosComponent implements OnInit {
           var list = st.substr(1, len - 2).split(',');
           var node = list[0];
           var adjNode = list[1];
+          // console.log(node,adjNode);
+          if (!this.adjListMain.has(node)) {
+            var arrp: string[] = [];
+            arrp.push(adjNode);
+            // console.log(arrp);
+            this.adjListMain.set(node, arrp);
+            // console.log(this.adjListMain);
+          }
+          else {
+            this.adjListMain.get(node).push(adjNode);
+
+          }
           if (!nodeSet.has(node)) {
             nodeSet.add(node);
             items.push({ id: node, label: node });
@@ -274,25 +208,14 @@ export class GraphAlgosComponent implements OnInit {
           edges.push({ id: this.makeid(), source: node, target: adjNode, label: node + adjNode });
         }
       }
+      console.log('printing from 2');
+      console.log(this.adjListMain);
+
       this.links = edges;
       this.nodes = items;
-    }
-
-    else if (this.inputFormat == 3) {
-      this.toggleDragging();
-      this.clusters = [];
-      this.animate = true;
-      var edges: Edge[] = [];
-      var len: number = this.textBoxInput.length;
-      if (len > 2) {
-        var input: string[] = this.textBoxInput.substr(1, len - 2).split(',');
-        this.arrayHelper(this.nodes, this.links, input, input.length, 0, this.makeid());
-      }
-      console.log(this.nodes);
-      console.log(this.links);
 
     }
-    
+
     else if (this.inputFormat == 4) {
       var items: Node[] = [];
       var edges: Edge[] = [];
@@ -321,52 +244,9 @@ export class GraphAlgosComponent implements OnInit {
       this.links = edges;
       this.nodes = items;
     }
+    // this.startPathFinding = true;
+    this.doingAlgo = true;
   }
-  
-  helperBinary() {
-    if (this.currForBinary < this.nodes.length) {
-      this.nodeSetBinary.add(this.nodes[this.currForBinary++].id);
-      console.log(this.nodeSetBinary);
-    }
-    else if(this.currForBinary==this.nodes.length){
-      this.makeEdgeVisible=true;
-      this.currForBinary++;
-      this.updateGraph();
-    }
-    else {
-      console.log('print');
-      console.log(this.nodes);
-      this.animate=false;
-    var st:string= this.nodes[0].label;
-    this.nodes[0].label=this.nodes[1].label;
-    this.nodes[1].label=st;
-    this.updateGraph();
-    console.log(this.nodes);
-    }
-    
-  }
-
-  arrayHelper(nodes: Node[], edges: Edge[], arr: string[], len: number, curr: number, currId: string) {
-    var left: number = curr * 2 + 1;
-    var right: number = curr * 2 + 2;
-    nodes.push({ id: currId, label: arr[curr] });
-    if (left < len) {
-      var leftId: string = this.makeid();
-      edges.push({ id: this.makeid(), source: currId, target: leftId, label: left.toString() });
-      this.arrayHelper(nodes, edges, arr, len, left, leftId);
-      // setTimeout(()=>{
-      //   console.log('delay done for 300');  
-      //   this.updateGraph();
-      // },1000);
-    }
-    if (right < len) {
-      var rightId: string = this.makeid();
-      edges.push({ id: this.makeid(), source: currId, target: rightId, label: left.toString() });
-      this.arrayHelper(nodes, edges, arr, len, right, rightId);
-
-    }
-  }
-
 
   makeid() {
     var result = '';
@@ -377,7 +257,7 @@ export class GraphAlgosComponent implements OnInit {
     }
     return result;
   }
-  
+
   wait(ms) {
     var start = new Date().getTime();
     var end = start;
@@ -385,4 +265,136 @@ export class GraphAlgosComponent implements OnInit {
       end = new Date().getTime();
     }
   }
+
+  makeAlgoDone() {
+    this.inputFormat = 0;
+    if (this.algoType == 'dfs') {
+      if (this.varforDfs == 0) {
+        this.startDfs();
+        this.progress++;
+        this.dfsColor.add(this.sequenceDfsAdded[this.varforDfs++]);
+
+      }
+      else if (this.varforDfs < this.sequenceDfsAdded.length) {
+        this.dfsColor.add(this.sequenceDfsAdded[this.varforDfs++]);
+        this.progress = this.dfsColor.size / this.sequenceDfsAdded.length * 100;
+      }
+    }
+    else if(this.algoType=='bfs'){
+      if (this.varforDfs == 0) {
+        this.bfsImpl();
+        this.progress++;
+        this.dfsColor.add(this.sequenceDfsAdded[this.varforDfs++]);
+
+      }
+      else if (this.varforDfs < this.sequenceDfsAdded.length) {
+        this.dfsColor.add(this.sequenceDfsAdded[this.varforDfs++]);
+        this.progress = this.dfsColor.size / this.sequenceDfsAdded.length * 100;
+      }
+    }
+  }
+
+  startDfs() {
+    this.sequenceDfsAdded=[];
+    this.dfsSet.clear();
+    var startNodeFound: boolean = false;
+    for (let node of this.nodes) {
+      if (node.label == this.startNode) {
+        startNodeFound = true;
+      }
+    }
+    if (startNodeFound) {
+      // this.dfsSet.clear();
+      // console.log(this.startNode);
+      this.dfsImpl(this.startNode);
+      console.log(this.sequenceDfsAdded);
+    }
+    else {
+      if (!startNodeFound)
+        this.textBoxInput = 'Start Node not present';
+    }
+  }
+  clearPath() {
+    this.sequenceDfsAdded = [];
+    this.dfsColor.clear();
+    this.startNode = '';
+    this.progress = 0;
+    this.varforDfs = 0;
+  }
+
+  dfsImpl(nodeh: string) {
+    if (!this.dfsSet.has(nodeh)) {
+      this.dfsSet.add(nodeh);
+      this.sequenceDfsAdded.push(nodeh);
+    }
+
+    for (let k of this.adjListMain.get(nodeh)) {
+      if (!this.dfsSet.has(k)) {
+        this.dfsSet.add(k);
+        this.sequenceDfsAdded.push(k);
+        if (this.adjListMain.has(k)) {
+        this.dfsImpl(k);
+       }
+      }
+      
+    }
+
+  }
+
+  // void DFSUtil(int v, boolean visited[])
+  //   {
+  //       // Mark the current node as visited and print it
+  //       visited[v] = true;
+  //       System.out.print(v + " ");
+ 
+  //       // Recur for all the vertices adjacent to this
+  //       // vertex
+  //       Iterator<Integer> i = adj[v].listIterator();
+  //       while (i.hasNext()) 
+  //       {
+  //           int n = i.next();
+  //           if (!visited[n])
+  //               DFSUtil(n, visited);
+  //       }
+  //   }
+
+  bfsImpl() {
+    var startNodeFound: boolean = false;
+    for (let node of this.nodes) {
+      if (node.label == this.startNode) {
+        startNodeFound = true;
+      }
+
+    }
+
+    if (startNodeFound) {
+      var q = new Queue<string>();
+      var discovered = new Set<string>();
+      discovered.add(this.startNode);
+      this.sequenceDfsAdded.push(this.startNode);
+      q.enqueue(this.startNode);
+      while (q.length != 0) {
+        var v = q.dequeue();
+        if (this.adjListMain.has(v)) {
+          for (let u of this.adjListMain.get(v)) {
+            console.log(u);
+            if (!discovered.has(u)) {
+              discovered.add(u);
+              this.sequenceDfsAdded.push(u);
+              q.enqueue(u);
+            }
+          }
+        }
+
+      }
+      console.log(this.sequenceDfsAdded);
+    }
+
+    else {
+      if (!startNodeFound)
+        this.textBoxInput = 'Start Node not present';
+    }
+  }
+
+
 }
