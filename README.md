@@ -2,33 +2,38 @@
 
 This is a Single page Web App to show graph in visual format to when a input(graph) is taken .
 
-1-> Binary Heap<br>
-    It takes a array as input and makes a heap representation of it and then converts it into a Max heap or Min heap as selected by user.<br>
-    Appropriate messages are shown while swapping and different colors are used for changed and unchanged part of array.<br>
-    ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/ArrayHeap.gif)
+## Binary Heap
+
+  It takes a array as input and makes a heap representation of it and then converts it into a Max heap or Min heap as selected by user.<br>
+  Appropriate messages are shown while swapping and different colors are used for changed and unchanged part of array.<br>
+  ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/ArrayHeap.gif)
     
 
-2->Graph Path Detection <br>
-    It shows a graph representation of an input graph .<br>
-    It supports two input formats - Adjacency List,Edge List,Weighted Edge List.<br>
-    Adjacency List ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/GraphVisualizationAdjList.gif)
-    Edge List![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/graphVisualizationEdgelist.gif)
-    Finally it shows all the nodes in a dropdown menu and then finds if a path exists between start and end nodes.<br>
+## Graph Path Detection 
 
-3->Graph Algos<br>
-    It also supports three input format.<br>
-    It has two Traversal Algorithms -Breadth First Traversal and Depth First Traversal.<br>
-    Both Algorithms is shown ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/gifForAlgos.gif)<br>
-    It shows visited and unvisited nodes(using different colors) according to traversal algorithms.<br>
+   It shows a graph representation of an input graph .<br>
+   It supports two input formats - Adjacency List,Edge List,Weighted Edge List.<br>
+   ### Adjacency List ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/GraphVisualizationAdjList.gif)
+   ### Edge List![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/graphVisualizationEdgelist.gif)
+   Finally it shows all the nodes in a dropdown menu and then finds if a path exists between start and end nodes.<br>
+
+## Graph Algos
+
+   It also supports three input format.<br>
+   It has two Traversal Algorithms -Breadth First Traversal and Depth First Traversal.<br>
+   Both Algorithms is shown ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/gifForAlgos.gif)<br>
+   It shows visited and unvisited nodes(using different colors) according to traversal algorithms.<br>
     
-4->Recursion
-    It shows graphical dependency of different recursion problems.<br>
-    It supports Six recusion problems Fibonacci, Fast Exponentiation, Knapsack , Subset Sum,Factorial,Coin Change.<br>
-    Fibonacci<br> ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/fibonacci.gif)<br>
-    knapsack<br> ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/knapsack.gif)<br>
-    Fast Exponentiation<br> ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/exponentiation.gif)<br>
-    Subset Sum <br>![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/subsetSum.gif)<br>
-    Input the required values and then It makes all nodes according to call made.<br>
+## Recursion
+
+   It shows graphical dependency of different recursion problems.<br>
+   It supports Six recusion problems Fibonacci, Fast Exponentiation, Knapsack , Subset Sum,Factorial,Coin Change.<br>
+   Input the required values and then It makes all nodes according to call made.<br>
+   ### Fibonacci<br> ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/fibonacci.gif)<br>
+   ### knapsack<br> ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/knapsack.gif)<br>
+   ### Fast Exponentiation<br> ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/exponentiation.gif)<br>
+   ###Subset Sum <br>![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/subsetSum.gif)<br>
+    
 
 
 ##
