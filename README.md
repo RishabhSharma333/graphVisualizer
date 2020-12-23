@@ -1,5 +1,25 @@
-# Graph Visualizer
+# Graph & Recursion Visualizer
+
 This is a Single page Web App to show graph in visual format to when a input(graph) is taken .
+
+1-> Binary Heap
+    It takes a array as input and makes a heap representation of it and then converts it into a Max heap or Min heap as selected by user.
+    Appropriate messages are shown while swapping and different colors are used for changed and unchanged part of array.
+
+2->Graph Path Detection 
+    It shows a graph representation of an input graph .
+    It supports two input formats - Adjacency List,Edge List,Weighted Edge List.
+    Finally it shows all the nodes in a dropdown menu and then finds if a path exists between start and end nodes.
+
+3->Graph Algos
+    It also supports three input format.
+    It has two Traversal Algorithms -Breadth First Traversal and Depth First Traversal.
+    It shows visited and unvisited nodes(using different colors) according to traversal algorithms.
+    
+4->Recursion
+    It shows graphical dependency of different recursion problems.
+    It supports Six recusion problems Fibonacci, Fast Exponentiation, Knapsack , Subset Sum,Factorial,Coin Change.
+    Input the required values and then It makes all nodes according to call made.
 
 
 ##
