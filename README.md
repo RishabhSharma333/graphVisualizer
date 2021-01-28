@@ -12,7 +12,7 @@ This is a Single page Web App to show graph in visual format to when a input(gra
 ## Graph Path Detection 
 
    It shows a graph representation of an input graph .<br>
-   It supports two input formats - Adjacency List,Edge List,Weighted Edge List.<br>
+   It supports two input formats - Adjacency List, Edge List, Weighted Edge List.<br>
    ### Adjacency List ![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/GraphVisualizationAdjList.gif)
    ### Edge List![alt text](https://github.com/RishabhSharma333/graphVisualizer/blob/master/src/gifs/graphVisualizationEdgelist.gif)
    Finally it shows all the nodes in a dropdown menu and then finds if a path exists between start and end nodes.<br>
