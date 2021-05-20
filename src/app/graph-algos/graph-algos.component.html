@@ -1,0 +1,163 @@
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+<div class="columns">
+  <div class="column is-2" style="background-color: rgb(128, 108, 0);">
+    <br>
+
+    <div class="dropdown " [ngClass]="{'is-active':textBoxMenu}">
+      <div class="dropdown-trigger">
+        <button class="button is-warning" aria-haspopup="true" aria-controls="dropdown-menu" (click)="toggleDropdown()">
+          <span>{{textForDropdown}}</span>
+          <span class="icon is-small">
+            <i class="ri-arrow-down-s-line"></i>
+          </span>
+        </button>
+      </div>
+      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+        <div class="dropdown-content">
+          <a class="dropdown-item" (click)="selectType(1)">
+            Adjacency List
+          </a>
+          <a class="dropdown-item" (click)="selectType(2)">
+            Edge List
+          </a>
+          <a class="dropdown-item" (click)="selectType(4)">
+            Weighted Edge List
+          </a>
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <div class="field">
+      <div class="control">
+        <textarea class="textarea" rows="10" style="border-radius: 2rem;" placeholder="{{textBoxMessage}}"
+          [disabled]="inputFormat==0" [(ngModel)]=textBoxInput></textarea>
+      </div>
+    </div>
+    <div class="column">
+      <div class="buttons">
+        <button class="button is-warning is-rounded is-medium" (click)="parseString()"
+          [disabled]="inputFormat==0">Render
+          Graph </button>
+        <button class="button is-warning is-rounded" (click)="clearGraph()">Clear Graph</button>
+
+        <button class="button is-warning is-rounded" (click)="centerGraph()"> Center</button>
+        <button class="button is-warning is-rounded" (click)="toggleIsGraphDirected()">
+          {{isDirected?'Directed':'Non-Directed'}}</button>
+
+      </div>
+    </div>
+    <hr>
+
+    <div class="column" *ngIf="doingAlgo">
+      
+
+      <div class="dropdown is-hoverable">
+        <div class="dropdown-trigger">
+          <button class="button is-warning" aria-haspopup="true" aria-controls="dropdown-menu"
+            (click)="toggleAlgoDropdown()">
+            <span>{{textForAlgo}}</span>
+            <span class="icon is-small">
+              <i class="ri-arrow-down-s-line"></i>
+            </span>
+          </button>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+          <div class="dropdown-content">
+            <a class="dropdown-item" (click)="selectAlgo(1)">
+              Depth First Traversal
+            </a>
+            <a class="dropdown-item" (click)="selectAlgo(2)">
+              Breadth First Traversal
+            </a>
+          </div>
+        </div>
+        <hr>
+      </div>
+<label class="label" 
+        style="color:white; font-weight: normal;"> Start Node:
+        <div class="control">
+          <input class="input" type="text" [disabled]="algoType==''||progress>0" placeholder=" Write Start Node" [(ngModel)]=startNode>
+        </div>
+      </label>
+
+      <button class="button is-warning is-rounded" (click)="clearPath()"> Clear Search</button>
+
+
+
+    </div>
+  </div>
+
+
+  <div class="column is-10" style="background-color: rgb(128, 108, 0);padding-right: 3rem; padding-top: 2rem; height: 913px;">
+    <div class="row" style="height: 4rem;">
+      <div class="columns">
+        <div class="column is-2" style="padding-top: 0rem; padding-left: 4rem;">
+          <button class="button is-rounded is-medium" [disabled]="!doingAlgo" (click)="makeAlgoDone()">Next
+            <i class="ri-play-line ri-2x" style="padding-left:1rem;"></i>
+          </button>
+
+        </div>
+        <div class="column is-10"> <progress class="progress is-warning is-large" [value]="progress" max="100">
+            progress</progress></div>
+
+      </div>
+    </div>
+
+
+    <!-- card starts -->
+    <div class="card" style="border-radius: 3rem; ">
+      <!-- graph starts -->
+      <ngx-graph class="chart-container" [view]="[1550, 799]" [showMiniMap]="true" [autoCenter]="true"
+        [maxZoomLevel]="2" [miniMapMaxHeight]="100" [layout]="layout" [draggingEnabled]="dragging"
+        [panningEnabled]="panning" [animate]="animate" [update$]="update$" [minZoomLevel]="0.5" [center$]="center$"
+        [links]="links" [nodes]="nodes" [clusters]="clusters" [curve]="curve">
+
+
+        <ng-template #nodeTemplate let-node>
+          <svg:g class="node" ngx-tooltip [tooltipPlacement]="'top'" [tooltipType]="'tooltip'"
+            [tooltipTitle]="node.label">
+            <svg:circle [attr.width]="node.dimension.width" [attr.height]="node.dimension.height"
+              [attr.cx]=" node.dimension.height/2" [attr.cy]="node.dimension.width/2 "
+              [attr.fill]="dfsColor.has(node.label)?'#a8385d':'#00A4A6'" [attr.r]="20" />
+            <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
+              {{node.label}}
+            </svg:text>
+          </svg:g>
+        </ng-template>
+
+        <ng-template #linkTemplate let-link>
+          <svg:g class="edge">
+            <svg:path class="line" stroke-width="2" marker-end="url(#arrow)"></svg:path>
+            <svg:text class="edge-label" text-anchor="middle" *ngIf="inputFormat==4">
+              <textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline"
+                startOffset="50%">
+                {{link.label}}
+              </textPath>
+            </svg:text>
+          </svg:g>
+        </ng-template>
+
+        <ng-template #defsTemplate *ngIf="isDirected">
+          <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
+            <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
+          </svg:marker>
+        </ng-template>
+
+        <ng-template #clusterTemplate let-cluster>
+          <svg:g class="node cluster" ngx-tooltip [tooltipPlacement]="'top'" [tooltipType]="'tooltip'"
+            [tooltipTitle]="cluster.label">
+            <svg:rect rx="5" ry="5" [attr.width]="cluster.dimension.width" [attr.height]="cluster.dimension.height"
+              [attr.fill]="cluster.data.color" />
+          </svg:g>
+        </ng-template>
+
+
+      </ngx-graph>
+      <!-- graph ends -->
+
+    </div>
+    <!-- card ends -->
+
+  </div>
+</div>
