@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { Queue } from 'queue-typescript';
 import * as shape from 'd3-shape';
 import { Node, Edge, ClusterNode } from '@swimlane/ngx-graph';
+import { ModalService } from '../modal.service';
 
 @Component({
   selector: 'app-graph-visual',
@@ -12,7 +13,7 @@ import { Node, Edge, ClusterNode } from '@swimlane/ngx-graph';
 })
 export class GraphVisualComponent implements OnInit {
 
-  constructor() { }
+  constructor(private modalService:ModalService) { }
 
   center$: Subject<boolean> = new Subject();
   update$: Subject<boolean> = new Subject();
@@ -33,6 +34,7 @@ export class GraphVisualComponent implements OnInit {
   clusters: ClusterNode[];
   textForDropdown: string;
   textBoxMessage: string;
+  isModalActive:boolean;
   textBoxInput: string;
   textBoxMenu: boolean = false;
   lineMenu: boolean = false;
@@ -47,11 +49,14 @@ export class GraphVisualComponent implements OnInit {
     this.textBoxInput='';
     this.startPathFinding = false;
     this.adjListMain = new Map<string, string[]>();
+    this.selectType(1);
     this.weightedAdjList = new Map<string, string[]>();
     // this.edgeListMain=new Map<string,string>();
     this.textBoxMessage = 'use dropdown to select Input Format Type ';
-    this.textForDropdown = 'Select Input Type';
-
+    this.textForDropdown = 'Adjacency List';
+    if(!this.modalService.graphVisualModal){
+      this.isModalActive=true;
+    }
     this.dragging = true;
     this.panning = true;
     this.layout = 'colaForceDirected';
@@ -108,7 +113,7 @@ export class GraphVisualComponent implements OnInit {
 
 
   selectType(num: number) {
-    this.toggleDropdown();
+    // this.toggleDropdown();
     this.textBoxInput = '';
     this.inputFormat = num;
     if (num == 1) {
@@ -301,6 +306,10 @@ export class GraphVisualComponent implements OnInit {
       if(!endNodeFound)
       this.textBoxInput=this.textBoxInput+'\n End Node not present';
     }
+  }
+  toggleModal(){
+    this.isModalActive=false;
+    this.modalService.changegraphVisualModal();
   }
 
 

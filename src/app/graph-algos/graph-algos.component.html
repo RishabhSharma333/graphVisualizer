@@ -3,7 +3,7 @@
   <div class="column is-2" style="background-color: rgb(128, 108, 0);">
     <br>
 
-    <div class="dropdown " [ngClass]="{'is-active':textBoxMenu}">
+    <div class="dropdown is-hoverable " [ngClass]="{'is-active':textBoxMenu}">
       <div class="dropdown-trigger">
         <button class="button is-warning" aria-haspopup="true" aria-controls="dropdown-menu" (click)="toggleDropdown()">
           <span>{{textForDropdown}}</span>
@@ -37,7 +37,7 @@
     <div class="column">
       <div class="buttons">
         <button class="button is-warning is-rounded is-medium" (click)="parseString()"
-          [disabled]="inputFormat==0">Render
+          [disabled]="inputFormat==0">Parse
           Graph </button>
         <button class="button is-warning is-rounded" (click)="clearGraph()">Clear Graph</button>
 
@@ -106,7 +106,7 @@
 
 
     <!-- card starts -->
-    <div class="card" style="border-radius: 3rem; ">
+    <div class="card" style="border-radius: 3rem;margin-bottom: 3rem; ">
       <!-- graph starts -->
       <ngx-graph class="chart-container" [view]="[1550, 799]" [showMiniMap]="true" [autoCenter]="true"
         [maxZoomLevel]="2" [miniMapMaxHeight]="100" [layout]="layout" [draggingEnabled]="dragging"
@@ -159,5 +159,38 @@
     </div>
     <!-- card ends -->
 
+  </div>
+</div>
+
+<div class="modal is-primary" [ngClass]="{ 'is-active' : isModalActive }">
+  <div class="modal-background" (click)="toggleModal()"></div>
+  <div class="modal-card">
+      <header class="modal-card-head">
+          <p class="modal-card-title">You seem to be a first-time visitor. Let me Help</p>
+          <button class="delete" aria-label="close" (click)="toggleModal()"></button>
+      </header>
+      <section class="modal-card-body">
+          <p class="subtitle">Paste this in the input box to try app</p>
+          <pre><p class="subtitle">
+A:[E,F]
+D:[G,B]
+G:[F,Q]
+E:[D,W,Y]
+W:[S]
+B:[S]
+S:[T,U]</p></pre>
+          <hr>
+          
+          <p class="subtitle">Step 1- parse the input graph  </p>
+          <p class="subtitle">Step 2- Select algo type ,write start node </p>
+          <p class="subtitle">Step 3- now use the next button to see your selected traversal </p>
+          <hr>
+          <p class="subtitle">Note: You can also use your input graph to see traversal, different types of inputs are supported </p>
+
+
+      </section>
+      <footer class="modal-card-foot">
+          <button class="button" (click)="toggleModal()">Cancel</button>
+      </footer>
   </div>
 </div>

@@ -2,7 +2,7 @@
 <div class="columns">
   <div class="column is-2" style="background-color: rgb(0, 64, 85);">
     <br>
-    <div class="dropdown "  [ngClass]="{'is-active':textBoxMenu}">
+    <div class="dropdown is-hoverable"  [ngClass]="{'is-active':textBoxMenu}">
       <div class="dropdown-trigger">
         <button class="button is-info" aria-haspopup="true" aria-controls="dropdown-menu" (click)="toggleDropdown()">
           <span>{{textForDropdown}}</span>
@@ -35,8 +35,8 @@
     </div>
     <div class="column">
       <div class="buttons">
-        <button class="button is-info is-rounded is-medium" (click)="parseString()" [disabled]="inputFormat==0">Render
-          Graph </button>
+        <button class="button is-info is-rounded is-medium" (click)="parseString()" [disabled]="inputFormat==0">Parse
+          Input </button>
         <button class="button is-info is-rounded" (click)="clearGraph()">Clear Graph</button>
         <button class="button is-info is-rounded" (click)="toggleDragging()"> Dragging <i *ngIf="dragging"
             class="ri-check-double-line">
@@ -76,7 +76,7 @@
      <br>
      <label class="label" *ngIf="startPathFinding" style="color: white; font-weight: normal;">End Node:
       <div class="control" >
-        <input class="input" type="text" placeholder=" Write End Node" [(ngModel)]=endNode>
+        <input class="input" type="text"  placeholder=" Write End Node" [(ngModel)]=endNode>
       </div></label>
    
 
@@ -91,7 +91,7 @@
 
 
     <!-- card starts -->
-    <div class="card" style="border-radius: 3rem; ">
+    <div class="card" style="border-radius: 2rem;margin-bottom: 3rem; ">
       <!-- graph starts -->
       <ngx-graph class="chart-container" [view]="[1550, 799]" [showMiniMap]="true" [autoCenter]="true"
         [maxZoomLevel]="2" [miniMapMaxHeight]="100" [layout]="layout" [draggingEnabled]="dragging"
@@ -144,5 +144,39 @@
     </div>
     <!-- card ends -->
 
+  </div>
+</div>
+
+
+<div class="modal is-primary" [ngClass]="{ 'is-active' : isModalActive }">
+  <div class="modal-background" (click)="toggleModal()"></div>
+  <div class="modal-card">
+      <header class="modal-card-head">
+          <p class="modal-card-title">You seem to be a first-time visitor.Let me help</p>
+          <button class="delete" aria-label="close" (click)="toggleModal()"></button>
+      </header>
+      <section class="modal-card-body">
+          <p class="subtitle">Paste this in the input box to try app</p>
+          <pre><p class="subtitle">
+A:[E,F]
+D:[G,B]
+G:[F,Q]
+E:[D,W,Y]
+W:[S]
+B:[S]
+S:[T,U]</p></pre>
+          <hr>
+          
+          <p class="subtitle">Step 1- parse the input graph  </p>
+          <p class="subtitle">Step 2- Write the start node and end node to find path between them </p>
+          <p class="subtitle">Step 1- Press find Path button  </p>
+          <hr>
+          <p class="subtitle">Note: You can also use your input graph to see traversal, different types of inputs are supported </p>
+
+
+      </section>
+      <footer class="modal-card-foot">
+          <button class="button" (click)="toggleModal()">Cancel</button>
+      </footer>
   </div>
 </div>

@@ -53,7 +53,7 @@ export class BinaryComponent implements OnInit {
     this.links = [];
     // this.isModalActive=true;
     this.layout = 'dagreCluster';
-    console.log('printing from binary');
+    // console.log('printing from binary');
   }
 
 

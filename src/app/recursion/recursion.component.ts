@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import * as shape from 'd3-shape';
 import { Node, Edge, ClusterNode } from '@swimlane/ngx-graph';
+import { ModalService } from '../modal.service';
 
 @Component({
   selector: 'app-recursion',
@@ -11,7 +12,7 @@ import { Node, Edge, ClusterNode } from '@swimlane/ngx-graph';
 })
 export class RecursionComponent implements OnInit {
 
-  constructor() { }
+  constructor(private modalService:ModalService) { }
 
   center$: Subject<boolean> = new Subject();
   update$: Subject<boolean> = new Subject();
@@ -36,6 +37,7 @@ export class RecursionComponent implements OnInit {
   algoType: string;
   fNodeLength:number;
   counting:number;
+  isModalActive:boolean;
 
   ngOnInit(): void {
     this.progress=0;
@@ -47,8 +49,13 @@ export class RecursionComponent implements OnInit {
     this.textBoxInput = '';
     this.panning = true;
     this.nodes = [];
+    if(!this.modalService.recursionModal){
+      this.isModalActive=true;
+    }
+    
     this.doingAlgo=false;
     this.links = [];
+
     this.counting=0;
     this.fibonacciSeries = [0
       , 1
@@ -92,7 +99,7 @@ export class RecursionComponent implements OnInit {
 
     ];
     this.algoType = 'fibonacci';
-    console.log('printing from recursion');
+    // console.log('printing from recursion');
   }
 
 
@@ -188,8 +195,8 @@ export class RecursionComponent implements OnInit {
       this.coinChange(arr,arr.length,sum,this.makeid());
     }
 
-    console.log(this.nodes);
-    console.log(this.links);
+    // console.log(this.nodes);
+    // console.log(this.links);
     this.fNodeLength=this.nodes.length;
     this.doingAlgo=true;
     this.textBoxInput='now use next button to see graphichal dependency';
@@ -415,6 +422,10 @@ export class RecursionComponent implements OnInit {
 
   clearGraph(){
     this.ngOnInit();
+  }
+  toggleModal(){
+    this.isModalActive=false;
+    this.modalService.changerecursionModal();
   }
   
 }

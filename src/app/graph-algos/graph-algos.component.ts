@@ -5,6 +5,7 @@ import * as shape from 'd3-shape';
 import { Queue } from 'queue-typescript';
 import { Node, Edge, ClusterNode } from '@swimlane/ngx-graph';
 import { sequence } from '@angular/animations';
+import { ModalService } from '../modal.service';
 
 @Component({
   selector: 'app-graph-algos',
@@ -13,7 +14,7 @@ import { sequence } from '@angular/animations';
 })
 export class GraphAlgosComponent implements OnInit {
 
-  constructor() { }
+  constructor(private modalService:ModalService) { }
 
   center$: Subject<boolean> = new Subject();
   update$: Subject<boolean> = new Subject();
@@ -46,6 +47,7 @@ export class GraphAlgosComponent implements OnInit {
   layoutMenu: boolean = false;
   inputFormat: number = 0;
   sequenceDfsAdded: string[] = [];
+  isModalActive:boolean;
   dfsSet: Set<string>;
   ngOnInit(): void {
     this.links = [];
@@ -59,6 +61,9 @@ export class GraphAlgosComponent implements OnInit {
     this.progress = 0;
     this.textBoxInput = '';
     this.algoMenu = false;
+    if(!this.modalService.graphAlgoModal){
+      this.isModalActive=true;
+    }
     this.algoType = '';
     this.dfsColor = new Set<string>();
     this.startAlgo = false;
@@ -68,12 +73,12 @@ export class GraphAlgosComponent implements OnInit {
     // this.edgeListMain=new Map<string,string>();
     this.textBoxMessage = 'use dropdown to select Input Format Type ';
     this.textForDropdown = 'Select Input Type';
-
+    this.selectType(1);
     this.dragging = true;
     this.sequenceDfsAdded = [];
     this.panning = true;
     this.layout = 'colaForceDirected';
-    console.log('printing from graph algos on in it');
+    // console.log('printing from graph algos on in it');
   }
 
   toggleAlgoDropdown() {
@@ -125,7 +130,9 @@ export class GraphAlgosComponent implements OnInit {
 
 
   selectType(num: number) {
-    this.toggleDropdown();
+    // if(this.modalService.graphAlgoModal){
+    //    this.toggleDropdown();
+    // }
     this.textBoxInput = '';
     this.inputFormat = num;
     if (num == 1) {
@@ -166,9 +173,9 @@ export class GraphAlgosComponent implements OnInit {
           this.links.push({ id: this.makeid(), source: node, target: str, label: node + str });
         }
       }
-      console.log('printing form adjacency list');
-      console.log('printing from 1');
-      console.log(this.adjListMain);
+      // console.log('printing form adjacency list');
+      // console.log('printing from 1');
+      // console.log(this.adjListMain);
       // console.log(this.nodes);
 
     }
@@ -208,8 +215,8 @@ export class GraphAlgosComponent implements OnInit {
           edges.push({ id: this.makeid(), source: node, target: adjNode, label: node + adjNode });
         }
       }
-      console.log('printing from 2');
-      console.log(this.adjListMain);
+      // console.log('printing from 2');
+      // console.log(this.adjListMain);
 
       this.links = edges;
       this.nodes = items;
@@ -307,7 +314,7 @@ export class GraphAlgosComponent implements OnInit {
       // this.dfsSet.clear();
       // console.log(this.startNode);
       this.dfsImpl(this.startNode);
-      console.log(this.sequenceDfsAdded);
+      // console.log(this.sequenceDfsAdded);
     }
     else {
       if (!startNodeFound)
@@ -377,7 +384,7 @@ export class GraphAlgosComponent implements OnInit {
         var v = q.dequeue();
         if (this.adjListMain.has(v)) {
           for (let u of this.adjListMain.get(v)) {
-            console.log(u);
+            // console.log(u);
             if (!discovered.has(u)) {
               discovered.add(u);
               this.sequenceDfsAdded.push(u);
@@ -387,13 +394,18 @@ export class GraphAlgosComponent implements OnInit {
         }
 
       }
-      console.log(this.sequenceDfsAdded);
+      // console.log(this.sequenceDfsAdded);
     }
 
     else {
       if (!startNodeFound)
         this.textBoxInput = 'Start Node not present';
     }
+  }
+
+  toggleModal(){
+    this.modalService.changegraphAlgoModal();
+    this.isModalActive = false;
   }
 
 
