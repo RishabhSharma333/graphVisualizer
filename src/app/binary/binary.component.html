@@ -10,8 +10,8 @@
     </div>
     <div class="column">
       <div class="buttons">
-        <button class="button is-danger is-rounded is-medium" (click)="parseString()" [disabled]="doingAlgo">Render
-          Graph </button>
+        <button class="button is-danger is-rounded is-medium" (click)="parseString()" [disabled]="doingAlgo">Parse
+          Input </button>
       </div>
     </div>
     <hr>
@@ -111,5 +111,31 @@
     </div>
     <!-- card ends -->
 
+  </div>
+</div>
+
+<div class="modal is-primary" [ngClass]="{ 'is-active' : isModalActive }">
+  <div class="modal-background" (click)="toggleModal()"></div>
+  <div class="modal-card">
+      <header class="modal-card-head">
+          <p class="modal-card-title">You seem to be a first-time visitor.</p>
+          <button class="delete" aria-label="close" (click)="toggleModal()"></button>
+      </header>
+      <section class="modal-card-body">
+          <p class="subtitle">Paste this in the input box to try app </p>
+          <pre><p class="subtitle">[3,6,12,7,9,8,13]</p></pre>
+          <hr>
+          
+          <p class="subtitle">Step 1- parse the input  </p>
+          <p class="subtitle">Step 2- use next button to form a binary heap</p>
+          <p class="subtitle">Step 3- Make Max or Min heap from created binary heap </p>
+          <hr>
+          <p class="subtitle">Note: You can also use your input array to make Binary heap </p>
+
+
+      </section>
+      <footer class="modal-card-foot">
+          <button class="button" (click)="toggleModal()">Cancel</button>
+      </footer>
   </div>
 </div>

@@ -1,62 +1,82 @@
-<link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+<link
+  href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"
+  rel="stylesheet"
+/>
 
-
-
-
-<div class="columns " style="padding-top: 4rem;">
-
-    <div class="column has-text-centered" style="padding-left: 4rem;" data-aos="fade-in" data-aos-easing="linear">
-        <div class="card" style="cursor: pointer; height:24rem;" (click)="goToBinaryHeap()">
-           
-            <i class="ri-organization-chart ri-3x"></i>
-            <hr />
-            <h2 class="subtitle"style="margin:0">
-                Binary Heap Algos
-            </h2>
-            <div class="card-content binary"  style="height:17rem; ">  </div>
-          
-        </div>
+<body style="background-color:lightgray">
+  <div class="columns" style="padding-top: 4rem">
+    <div
+      class="column has-text-centered"
+      style="padding-left: 4rem"
+      data-aos="fade-in"
+      data-aos-easing="linear"
+    >
+      <div
+        class="card"
+        style="cursor: pointer; height: 24rem"
+        (click)="goToBinaryHeap()"
+      >
+        <i class="ri-organization-chart ri-3x"></i>
+        <hr />
+        <h2 class="subtitle" style="margin: 0">Binary Heap Algos</h2>
+        <div class="card-content binary" style="height: 17rem"></div>
+      </div>
     </div>
 
+    <div
+      class="column has-text-centered"
+      style="padding-right: 4rem"
+      data-aos="fade-in"
+      data-aos-easing="linear"
+    >
+      <div
+        class="card"
+        style="cursor: pointer; height: 24rem; padding-left: 2rem"
+        (click)="goToGraphVisuals()"
+      >
+        <i class="ri-flow-chart ri-3x"></i>
+        <hr />
+        <h2 class="subtitle">Graph Visuals and Path Detection</h2>
+        <div class="card-content visuals" style="height: 17rem"></div>
+      </div>
+    </div>
+  </div>
 
-    <div class="column has-text-centered" style="padding-right:4rem ;" data-aos="fade-in" data-aos-easing="linear">
-        <div class="card" style="cursor: pointer;height: 24rem;padding-left: 2rem;" (click)="goToGraphVisuals()">
-
-            <i class="ri-flow-chart  ri-3x"></i>
-            <hr />
-            <h2 class="subtitle">
-                Graph Visuals and Path Detection
-            </h2>
-            <div class="card-content visuals"  style="height:17rem;">  </div>
-
-        </div>
+  <div class="columns">
+    <div
+      class="column has-text-centered"
+      style="padding-left: 4rem"
+      data-aos="fade-in"
+      data-aos-easing="linear"
+    >
+      <div
+        class="card"
+        style="cursor: pointer; height: 24rem; margin-bottom: 4rem; padding-left: 2rem"
+        (click)="goToGraphAlgos()"
+      >
+        <i class="ri-mind-map ri-3x"></i>
+        <hr />
+        <h2 class="subtitle">Graph Algos</h2>
+        <div class="card-content algos" style="height: 17rem"></div>
+      </div>
     </div>
 
-</div>
-
-<div class="columns">
-    <div class="column has-text-centered" style="padding-left: 4rem;" data-aos="fade-in" data-aos-easing="linear">
-        <div class="card" style="cursor: pointer;height: 24rem;padding-left:2rem" (click)="goToGraphAlgos()"><i
-                class="ri-mind-map  ri-3x"></i>
-            <hr />
-            <h2 class="subtitle">
-                Graph Algos
-            </h2>
-            <div class="card-content algos"  style="height:17rem; ">  </div>
-        </div>
-
+    <div
+      class="column has-text-centered"
+      style="padding-right: 4rem"
+      data-aos="fade-in"
+      data-aos-easing="linear"
+    >
+      <div
+        class="card"
+        style="cursor: pointer; height: 24rem; padding-left: 2rem"
+        (click)="goToRecursion()"
+      >
+        <i class="ri-node-tree ri-3x"></i>
+        <hr />
+        <h2 class="subtitle">Recursion Visuals</h2>
+        <div class="card-content recursion" style="height: 17rem"></div>
+      </div>
     </div>
-
-    <div class="column has-text-centered" style="padding-right: 4rem;" data-aos="fade-in" data-aos-easing="linear">
-        <div class="card" style="cursor: pointer;height: 24rem;padding-left:2rem;" (click)="goToRecursion()"><i
-                class="ri-node-tree  ri-3x"></i>
-            <hr />
-            <h2 class="subtitle">
-                Recursion Visuals
-            </h2>
-            <div class="card-content recursion"  style="height:17rem; ">  </div>
-
-        </div>
-
-    </div>
-</div>
+  </div>
+</body>

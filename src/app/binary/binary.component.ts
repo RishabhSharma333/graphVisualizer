@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import * as shape from 'd3-shape';
 import { Node, Edge } from '@swimlane/ngx-graph';
+import { ModalService } from '../modal.service';
 
 @Component({
   selector: 'app-binary',
@@ -11,7 +12,8 @@ import { Node, Edge } from '@swimlane/ngx-graph';
 })
 export class BinaryComponent implements OnInit {
 
-  constructor() { }
+  constructor(private modalService:ModalService) {
+  }
 
 
   center$: Subject<boolean> = new Subject();
@@ -35,6 +37,7 @@ export class BinaryComponent implements OnInit {
   currForBinary: number = 0;
   startIdx: number;
   makingMaxHeap: boolean = true;
+  isModalActive:boolean;
 
   ngOnInit(): void {
     this.nodeSetBinary = new Set<string>();
@@ -43,8 +46,12 @@ export class BinaryComponent implements OnInit {
     this.dragging = false;
     this.textBoxInput = '';
     this.panning = true;
+    if(!this.modalService.binaryModal){
+      this.isModalActive=true;
+    }
     this.nodes = [];
     this.links = [];
+    // this.isModalActive=true;
     this.layout = 'dagreCluster';
     console.log('printing from binary');
   }
@@ -218,6 +225,11 @@ export class BinaryComponent implements OnInit {
       this.textBoxInput = 'swapped ' + this.nodes[i].label + ' with ' + this.nodes[largest].label;
       this.heapify(n, largest);
     }
+  }
+
+  toggleModal(){
+    this.modalService.changebinaryModal();
+    this.isModalActive = false;
   }
 
   // #a95963
