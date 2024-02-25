@@ -1,6 +1,6 @@
 # Graph & Recursion Visualizer
 
-This is a Single page Web App to show graph in visual format to when a input(graph) is taken .
+This is a Single page Web App to show graph in visual format to when a input(graph) is taken. Checkout the demo of the project at - https://rishabhsharma333.github.io/graphVisualizer/
 
 ## Binary Heap
 
